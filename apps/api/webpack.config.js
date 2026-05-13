@@ -9,6 +9,10 @@ module.exports = {
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     }),
   },
+  externals: {
+    '@org/contracts': 'commonjs @org/contracts',
+    '@org/validations': 'commonjs @org/validations',
+  },
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',
