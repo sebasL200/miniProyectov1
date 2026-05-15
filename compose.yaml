@@ -1,0 +1,107 @@
+services:
+  db:
+    image: postgres:18.2-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${EXPOSED_DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  db-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tooling
+    working_dir: /workspace
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: 5432
+      DB_SSL_MODE: ${DB_SSL_MODE}
+      LOCAL_DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=${DB_SSL_MODE}
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules
+    command: pnpm exec nx run db:migrate-reset
+    restart: "no"
+
+  db-seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tooling
+    working_dir: /workspace
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+    environment:
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: 5432
+      DB_SSL_MODE: ${DB_SSL_MODE}
+      LOCAL_DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=${DB_SSL_MODE}
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules
+    command: pnpm exec nx run db:seed
+    restart: "no"
+
+  redis-cache:
+    image: valkey/valkey:9.0.2-alpine
+    command: redis-server
+    ports:
+      - "${INFRA_REDIS_CACHE_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis-analytics:
+    image: valkey/valkey:9.0.2-alpine
+    command: redis-server
+    ports:
+      - "${INFRA_REDIS_ANALYTICS_PORT:-6378}:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  db-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tooling
+    working_dir: /workspace
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=${DB_SSL_MODE}
+      LOCAL_DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=${DB_SSL_MODE}
+    ports:
+      - "${STUDIO_PORT:-5555}:5555"
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules
+    command: pnpm prisma studio --config libs/db/prisma.config.ts --port 5555 --browser none
+
+volumes:
+  db-data:

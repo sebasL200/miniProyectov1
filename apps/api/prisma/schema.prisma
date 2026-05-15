@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
-
 model Category {
   id              String     @id @default(uuid())
   parentId        String?    @map("parent_id")
