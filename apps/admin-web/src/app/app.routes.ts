@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-export const appRoutes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
@@ -8,13 +8,18 @@ export const appRoutes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'categories',
+        redirectTo: 'catalogos',
         pathMatch: 'full',
       },
       {
-        path: 'categories',
-        loadChildren: () =>
-          import('./categories/categories.routes').then((m) => m.categoriesRoutes),
+        path: 'catalogos',
+        loadComponent: () =>
+          import('./categories/pages/catalogs/catalogs.page').then((m) => m.CatalogsPage),
+      },
+      {
+        path: 'catalogos/categorias',
+        loadComponent: () =>
+          import('./categories/pages/categories/categories.page').then((m) => m.CategoriesPage),
       },
     ],
   },

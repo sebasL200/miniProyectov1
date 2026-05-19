@@ -1,0 +1,26 @@
+<span
+  [class]="triggerClasses()"
+  (mouseenter)="onPointerEnter()"
+  (mouseleave)="onPointerLeave()"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut($event)"
+  (keydown.escape)="onEscapeKey()"
+>
+  <ng-content select="[slot=trigger]"></ng-content>
+
+  @if (hasContent()) {
+    <span
+      [class]="contentClasses()"
+      [attr.aria-hidden]="!open()"
+      role="tooltip"
+    >
+      @if (hasSlot('content')) {
+        <ng-content select="[slot=content]"></ng-content>
+      } @else {
+        {{ content() }}
+      }
+
+      <span [class]="arrowClasses()" aria-hidden="true"></span>
+    </span>
+  }
+</span>

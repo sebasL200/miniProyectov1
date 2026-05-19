@@ -1,0 +1,38 @@
+<div class="data-grid-scroll">
+  <table class="data-grid-table">
+    <thead>
+      <tr class="bg-gray-100">
+        @for (column of columns(); track $index) {
+          <th class="text-sm p-2">{{ column.label }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of data(); track row ?? $index) {
+        <tr>
+          @for (column of columns(); track $index) {
+            @if (column.template && getTemplate(column.template)) {
+              <td ecom-data-grid-cell>
+                <ng-container
+                  [ngTemplateOutlet]="getTemplate(column.template)"
+                  [ngTemplateOutletContext]="{ $implicit: row, column: column }"
+                ></ng-container>
+              </td>
+            } @else {
+              <td ecom-data-grid-cell [column]="column" [value]="row"></td>
+            }
+          }
+        </tr>
+      }
+      @if (rowsLimit() !== undefined) {
+        @for (item of rowsLeft() | slice: 0 : rowsLimit(); track $index) {
+          <tr>
+            @for (column of columns(); track $index) {
+              <td ecom-data-grid-cell></td>
+            }
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

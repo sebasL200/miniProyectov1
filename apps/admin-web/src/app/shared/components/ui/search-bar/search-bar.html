@@ -1,0 +1,12 @@
+<input
+  [class]="inputClasses()"
+  type="search"
+  [id]="id()"
+  [name]="name()"
+  [title]="title()"
+  [disabled]="disabled()"
+  [value]="value()"
+  [placeholder]="placeholder()"
+  (input)="onInput($event)"
+/>
+<fa-icon [class]="iconClasses()" [icon]="icon()"></fa-icon>

@@ -1,0 +1,5 @@
+<div class="absolute top-4 right-4 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-3 pointer-events-none">
+  @for (toast of toasts(); track toast.id) {
+    <ecom-toast [message]="toast.config.message" [type]="toast.config.type" (closed)="onToastClosed(toast.id)"></ecom-toast>
+  }
+</div>

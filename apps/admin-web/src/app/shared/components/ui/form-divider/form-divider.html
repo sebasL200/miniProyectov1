@@ -1,0 +1,11 @@
+@if (labelPosition() !== 'left') {
+  <div class="flex-1 h-px bg-gray-300"></div>
+}
+@if (label()) {
+  <span class="text-sm text-gray-500 whitespace-nowrap shrink-0">
+    {{ label() }}
+  </span>
+}
+@if (labelPosition() !== 'right') {
+  <div class="flex-1 h-px bg-gray-300"></div>
+}

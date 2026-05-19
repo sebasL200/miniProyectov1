@@ -1,0 +1,30 @@
+<!-- TODO: Implement disable logic -->
+@if (this.actions().canClear) {
+  <ecom-button
+    type="reset"
+    [variant]="this.actions().clearButtonVariant"
+    [size]="this.actions().clearButtonSize"
+    (clicked)="clear.emit()"
+  >
+    {{ this.actions().clearLabel }}
+  </ecom-button>
+}
+@if (this.actions().canCancel) {
+  <ecom-button
+    type="button"
+    [variant]="this.actions().cancelButtonVariant"
+    [size]="this.actions().cancelButtonSize"
+    (clicked)="cancel.emit()"
+  >
+    {{ this.actions().cancelLabel }}
+  </ecom-button>
+}
+<ecom-button
+  type="submit"
+  [variant]="this.actions().submitButtonVariant"
+  [size]="this.actions().submitButtonSize"
+  (clicked)="submit.emit()"
+  [disabled]="disableSubmit()"
+>
+  {{ this.actions().submitLabel }}
+</ecom-button>

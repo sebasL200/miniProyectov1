@@ -1,0 +1,28 @@
+<button
+  type="button"
+  [title]="value().label"
+  class="flex items-center p-2 w-full hover:cursor-pointer hover:bg-primary/10"
+  (click)="navigate()"
+  [ngClass]="{
+    'justify-center': !isOpen(),
+    'gap-3': isOpen(),
+    'text-sm': isChild(),
+    'text-base': !isChild(),
+    'text-primary font-semibold': isActive(),
+  }"
+>
+  @if (value().icon) {
+    <fa-icon class="text-primary" [icon]="value().icon" />
+  }
+  <span
+    class="overflow-hidden transition-all duration-300"
+    [ngClass]="{
+      'w-0 opacity-0 whitespace-nowrap': !isOpen(),
+      'w-full opacity-100': isOpen(),
+      'font-semibold': isActive(),
+      'font-normal': !isActive(),
+    }"
+  >
+    {{ value().label }}
+  </span>
+</button>

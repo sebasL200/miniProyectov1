@@ -1,0 +1,26 @@
+<label [class]="wrapperClasses()">
+  <input
+    #inputElement
+    type="checkbox"
+    role="switch"
+    [id]="id()"
+    [name]="name()"
+    [title]="title()"
+    [checked]="checked()"
+    [disabled]="isDisabled()"
+    [required]="required()"
+    [attr.aria-readonly]="readonly()"
+    [class]="inputClasses()"
+    (click)="onInputClick($event)"
+    (change)="onCheckedChange($event)"
+    (blur)="onBlur()"
+  />
+
+  <span [class]="trackClasses()">
+    <span [class]="thumbClasses()"></span>
+  </span>
+
+  <span [class]="labelClasses()">
+    <ng-content />
+  </span>
+</label>

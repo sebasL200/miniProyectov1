@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("LOCAL_DB_URL")
 }
 model Category {
   id              String     @id @default(uuid())

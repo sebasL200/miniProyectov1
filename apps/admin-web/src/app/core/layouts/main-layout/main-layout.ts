@@ -1,50 +1,104 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Sidebar } from '@shared/components/sidebar/sidebar';
+import { SidebarService } from '@shared/services/sidebar/sidebar-service';
+import {
+  faBagShopping,
+  faBasketShopping,
+  faBookOpen,
+  faBoxes,
+  faCircleDollarToSlot,
+  faFileLines,
+  faLock,
+  faTableCellsLarge,
+  faUser,
+  faWarehouse,
+} from '@fortawesome/free-solid-svg-icons';
+import { NgClass } from '@angular/common';
+import { Header } from '@shared/components/header/header';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-main-layout',
+  selector: 'ecom-main-layout',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [Sidebar, NgClass, Header, RouterOutlet],
   template: `
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <h1 class="logo">📦 Catálogo</h1>
-        </div>
-        <nav class="sidebar-nav">
-          <a routerLink="/categories" class="nav-item active">
-            <span class="nav-icon">📂</span>
-            <span class="nav-label">Categorías</span>
-          </a>
-        </nav>
-      </aside>
-      <main class="main-content">
-        <header class="top-bar">
-          <div class="top-bar-title">Panel de Administración</div>
-          <div class="top-bar-user">👤 Admin (Test)</div>
-        </header>
-        <div class="page-content">
+    <div class="relative h-screen max-h-screen overflow-hidden">
+      <ecom-sidebar></ecom-sidebar>
+      <div
+        class="flex flex-col h-screen ml-72 transition-all ease-in-out duration-300"
+        [ngClass]="{
+          'ml-72': isOpenSidebar(),
+          'ml-24': !isOpenSidebar(),
+        }"
+      >
+        <header ecom-header></header>
+        <main class="flex-1 min-h-0 overflow-y-auto bg-primary-background">
           <router-outlet />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   `,
-  styles: [`
-    .layout { display: flex; height: 100vh; background: #0f1117; color: #e1e4e8; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
-    .sidebar { width: 260px; background: #161b22; border-right: 1px solid #21262d; display: flex; flex-direction: column; }
-    .sidebar-header { padding: 24px 20px; border-bottom: 1px solid #21262d; }
-    .logo { font-size: 20px; font-weight: 700; margin: 0; background: linear-gradient(135deg, #58a6ff, #bc8cff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .sidebar-nav { padding: 12px 8px; flex: 1; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; color: #8b949e; text-decoration: none; transition: all 0.2s; margin-bottom: 4px; }
-    .nav-item:hover { background: #1c2128; color: #e1e4e8; }
-    .nav-item.active { background: rgba(88, 166, 255, 0.1); color: #58a6ff; }
-    .nav-icon { font-size: 18px; }
-    .nav-label { font-size: 14px; font-weight: 500; }
-    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .top-bar { height: 56px; background: #161b22; border-bottom: 1px solid #21262d; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
-    .top-bar-title { font-size: 14px; font-weight: 600; color: #e1e4e8; }
-    .top-bar-user { font-size: 13px; color: #8b949e; }
-    .page-content { flex: 1; overflow-y: auto; padding: 24px; }
-  `],
+  providers: [SidebarService],
 })
-export class MainLayout {}
+export class MainLayout implements OnInit {
+  sidebarService: SidebarService = inject(SidebarService);
+
+  isOpenSidebar = this.sidebarService.isOpen;
+
+  toggleSidebar = () => this.sidebarService.toggle();
+
+  ngOnInit(): void {
+    this.sidebarService.options.set([
+      {
+        label: 'Inicio',
+        href: '/',
+        icon: faTableCellsLarge,
+      },
+      {
+        label: 'Catálogos',
+        href: '/catalogos',
+        icon: faBookOpen,
+      },
+      {
+        label: 'Inventario',
+        href: '/inventory',
+        icon: faBoxes,
+      },
+      {
+        label: 'Ordenes y ventas',
+        href: '/customers',
+        icon: faBasketShopping,
+      },
+      {
+        label: 'Pagos',
+        href: '/payments',
+        icon: faCircleDollarToSlot,
+      },
+      {
+        label: 'Usuarios',
+        href: '/users',
+        icon: faUser,
+      },
+      {
+        label: 'Soporte y postventa',
+        href: '/support',
+        icon: faBagShopping,
+      },
+      {
+        label: 'Configuración de la tienda',
+        href: '/settings',
+        icon: faWarehouse,
+      },
+      {
+        label: 'Seguridad y auditoría',
+        href: '/security',
+        icon: faLock,
+      },
+      {
+        label: 'Reportes',
+        href: '/reports',
+        icon: faFileLines,
+      },
+    ]);
+  }
+}

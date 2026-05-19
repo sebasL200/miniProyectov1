@@ -1,0 +1,27 @@
+<label [class]="wrapperClasses()">
+  <div class="relative flex items-center justify-center">
+    <input
+      #inputElement
+      type="checkbox"
+      [id]="id()"
+      [name]="name()"
+      [title]="title()"
+      [class]="checkboxClasses()"
+      [checked]="checked()"
+      [disabled]="isDisabled()"
+      [required]="required()"
+      [attr.aria-readonly]="readonly()"
+      (click)="onInputClick($event)"
+      (change)="onCheckedChange($event)"
+      (blur)="onBlur()"
+    />
+    <fa-icon
+      [icon]="faCheck"
+      [class]="iconClasses()"
+      aria-hidden="true"
+    />
+  </div>
+  <span [class]="labelClasses()">
+    <ng-content />
+  </span>
+</label>

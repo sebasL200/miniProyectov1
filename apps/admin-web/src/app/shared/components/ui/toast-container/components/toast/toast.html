@@ -1,0 +1,7 @@
+<div class="min-w-0 flex-1">
+  <p class="text-sm">{{ message() }}</p>
+</div>
+<ecom-button [class]="closeButtonClasses()" size="icon-sm" variant="ghost" (clicked)="close()">
+  <span class="sr-only">Cerrar notificacion</span>
+  <fa-icon class="pointer-events-none text-xs" size="xs" [icon]="faX"></fa-icon>
+</ecom-button>

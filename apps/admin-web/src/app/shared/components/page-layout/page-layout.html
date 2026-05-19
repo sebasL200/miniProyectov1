@@ -1,0 +1,18 @@
+@if (isLoading()) {
+  <div class="relative flex items-center justify-center h-full overflow-hidden"
+       role="status" aria-label="Cargando página">
+
+    <!-- Barra superior animada -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 overflow-hidden">
+      <div class="loader-bar"></div>
+    </div>
+
+    <!-- Spinner centrado -->
+    <div class="flex flex-col items-center gap-4">
+      <ecom-spinner variant="secondary" size="xl" />
+    </div>
+
+  </div>
+} @else {
+  <ng-content></ng-content>
+}

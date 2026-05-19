@@ -1,0 +1,12 @@
+<button
+  type="button"
+  [class]="buttonClasses()"
+  [title]="title()"
+  [disabled]="disabled()"
+  [attr.aria-label]="ariaLabel() || title() || label()"
+  [attr.aria-pressed]="pressed()"
+  (mousedown)="onMouseDown($event)"
+  (click)="onClick()"
+>
+  {{ label() }}
+</button>

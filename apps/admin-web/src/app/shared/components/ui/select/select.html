@@ -1,0 +1,63 @@
+<div #selectElement [class]="rootClasses()" (focusout)="onFocusOut($event)">
+  <button
+    #triggerElement
+    type="button"
+    [id]="id()"
+    role="combobox"
+    [name]="name()"
+    [title]="title() || displayLabel()"
+    [class]="triggerClasses()"
+    [disabled]="isDisabled()"
+    [attr.aria-expanded]="open()"
+    [attr.aria-invalid]="invalid()"
+    [attr.aria-readonly]="readonly()"
+    [attr.aria-required]="required()"
+    aria-haspopup="listbox"
+    (click)="toggleDropdown()"
+    (keydown)="onTriggerKeydown($event)"
+  >
+    <span [class]="labelClasses()">{{ displayLabel() }}</span>
+    @if (!isDisabled()) {
+    <fa-icon [icon]="faChevronDown" [class]="iconClasses()" />
+    }
+  </button>
+
+  <div [class]="dropdownClasses()">
+    @if (searchable()) {
+    <div [class]="searchWrapperClasses()">
+      <input
+        #searchInput
+        type="text"
+        [value]="searchTerm()"
+        [class]="searchInputClasses()"
+        placeholder="Buscar..."
+        (input)="onSearchInput($event)"
+      />
+    </div>
+    }
+
+    <ul [class]="optionsWrapperClasses()" role="listbox">
+      @if (filteredOptions().length) { @for (option of filteredOptions(); track
+      trackByOption($index, option)) {
+      <li>
+        <button
+          type="button"
+          role="option"
+          [class]="optionClasses(option)"
+          [disabled]="option.disabled"
+          [attr.aria-selected]="isSelected(option)"
+          (click)="onSelect(option)"
+          (keydown)="onOptionKeydown($event, option)"
+        >
+          <span [class]="optionLabelClasses()">{{ option.label }}</span>
+          <fa-icon [icon]="faCheck" [class]="optionIndicatorClasses(option)" />
+        </button>
+      </li>
+      } } @else {
+      <li>
+        <div [class]="emptyStateClasses()">Sin resultados</div>
+      </li>
+      }
+    </ul>
+  </div>
+</div>

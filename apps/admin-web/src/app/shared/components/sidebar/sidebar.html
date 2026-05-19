@@ -1,0 +1,22 @@
+<aside
+  class="absolute left-0 h-screen bg-white max-w-72 transition-all duration-300 ease-in-out overflow-hidden"
+  [ngClass]="{ 'w-72': isOpen(), 'w-24': !isOpen() }"
+>
+  <article class="flex flex-col h-screen">
+    <header class="flex items-center justify-center text-4xl font-bold p-4 bg-secondary-background">
+      <h1 class="inline-block text-secondary">Ec</h1>
+      <span
+        class="transition-all duration-300 ease-in-out"
+        [ngClass]="{
+          'w-0 opacity-0': !isOpen(),
+        }"
+        >ommerce</span
+      >
+    </header>
+    <main class="flex-1 flex flex-col gap-4 h-full p-4 overflow-y overflow-x-hidden">
+      @for (option of options(); track $index) {
+        <ecom-side-item [item]="option"></ecom-side-item>
+      }
+    </main>
+  </article>
+</aside>

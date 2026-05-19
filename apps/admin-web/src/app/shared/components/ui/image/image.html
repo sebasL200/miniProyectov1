@@ -1,0 +1,17 @@
+@if (error()) {
+  <div [class]="errorSlotClasses()">
+    <ng-content select="[slot=error]"></ng-content>
+  </div>
+
+  <div [class]="placeholderClasses()">
+    <fa-icon [class]="placeholderIconClasses()" [icon]="faImage" aria-hidden="true" />
+  </div>
+} @else {
+  <img
+    [class]="imageClasses()"
+    [loading]="loading()"
+    [src]="src()"
+    [alt]="alt()"
+    (error)="showError()"
+  />
+}

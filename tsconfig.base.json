@@ -16,6 +16,13 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@org/source"]
+    "customConditions": ["@org/source"],
+    "ignoreDeprecations": "5.0",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["apps/admin-web/src/app/shared/*"],
+      "@org/contracts": ["libs/shared/contracts/src/index.ts"],
+      "@org/validations": ["libs/shared/validations/src/index.ts"]
+    }
   }
 }

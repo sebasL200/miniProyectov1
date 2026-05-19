@@ -1,0 +1,26 @@
+<div class="flex items-center gap-3">
+    <ecom-button variant="outline" size="icon" (clicked)="toggleSidebar()">
+        <fa-icon slot="icon" [icon]="faBars"></fa-icon>
+    </ecom-button>
+    <ecom-search-bar (debounce)="onSearch($event)" />
+</div>
+<div>
+    <ecom-dropdown>
+        <ecom-dropdown-trigger>
+            <button type="button" class="flex items-center gap-4 hover:cursor-pointer">
+                <div class="w-10 h-10 rounded-full bg-primary text-primary-background flex items-center justify-center">
+                    {{ firstLetterOfUserName() }}
+                </div>
+                <div class="flex flex-col items-start min-w-32">
+                    <span class="text-sm truncate max-w-full font-semibold text-foreground">{{ currentUser().name }}</span>
+                    <span class="text-xs text-muted-foreground">{{ rol() }}</span>
+                </div>
+            </button>
+        </ecom-dropdown-trigger>
+        <ecom-dropdown-content class="w-full mt-4">
+            <ecom-dropdown-group>
+                <ecom-dropdown-item class="text-xs! text-secondary font-semibold" label="Cerrar Sesión" (click)="onLogout()" [icon]="faArrowRightFromBracket" />
+            </ecom-dropdown-group>
+        </ecom-dropdown-content>
+    </ecom-dropdown>
+</div>

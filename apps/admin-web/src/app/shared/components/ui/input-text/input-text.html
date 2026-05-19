@@ -1,0 +1,15 @@
+<input
+  #inputElement
+  [class]="inputClasses()"
+  [id]="inputId()"
+  [type]="type()"
+  [value]="value()"
+  [name]="name()"
+  (input)="onInput($event)"
+  (blur)="onBlur()"
+  [placeholder]="placeholder()"
+  [title]="title()"
+  [disabled]="isDisabled()"
+  [readOnly]="readonly()"
+  [required]="required()"
+/>

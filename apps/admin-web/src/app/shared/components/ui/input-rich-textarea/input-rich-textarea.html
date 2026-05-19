@@ -1,0 +1,69 @@
+<div [class]="rootClasses()">
+  @if (toolbarSections().length > 0) {
+    <div [class]="toolbarClasses()" role="toolbar" aria-label="Rich text tools">
+      @for (section of toolbarSections(); track trackByToolbarSection($index, section)) {
+        @if ($index > 0) {
+          <div [class]="toolbarDividerClasses()" aria-hidden="true"></div>
+        }
+
+        @if (section.type === 'paragraph-style') {
+          <label [class]="toolbarSelectWrapperClasses()">
+            <span [class]="toolbarSelectPrefixClasses()" aria-hidden="true">T↕</span>
+            <span class="sr-only">Tipo de parrafo</span>
+            <select
+              [class]="toolbarSelectClasses()"
+              [value]="selectedParagraphStyleId()"
+              [disabled]="isDisabled() || readonly()"
+              title="Tipo de parrafo"
+              aria-label="Tipo de parrafo"
+              (change)="onParagraphStyleChange($event)"
+            >
+              @for (option of paragraphStyleOptions; track trackByParagraphStyle($index, option)) {
+                <option [value]="option.id">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+        } @else {
+          @for (action of section.actions ?? []; track trackByAction($index, action)) {
+            <ecom-toolbar-button
+              [label]="action.label"
+              [title]="action.title"
+              [pressed]="!!action.active"
+              [disabled]="isDisabled() || readonly()"
+              (triggered)="onToolbarAction(action)"
+            />
+          }
+        }
+      }
+    </div>
+  }
+
+  <div [class]="editorContainerClasses()">
+    <div
+      #editorElement
+      [class]="editorClasses()"
+      [id]="id()"
+      [attr.contenteditable]="editorContentEditable()"
+      [attr.title]="title()"
+      [attr.aria-disabled]="isDisabled()"
+      [attr.aria-label]="title() || placeholder()"
+      [attr.aria-multiline]="true"
+      [attr.aria-readonly]="readonly()"
+      [attr.aria-required]="required()"
+      role="textbox"
+      (input)="onEditorInput()"
+      (keyup)="onEditorSelectionInteraction()"
+      (mouseup)="onEditorSelectionInteraction()"
+      (focus)="onEditorFocus()"
+      (blur)="onEditorBlur()"
+    ></div>
+
+    @if (showPlaceholder()) {
+      <span [class]="placeholderClasses()">{{ placeholder() }}</span>
+    }
+  </div>
+
+  @if (name()) {
+    <input type="hidden" [name]="name()" [value]="value()" />
+  }
+</div>

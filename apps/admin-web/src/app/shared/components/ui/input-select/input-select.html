@@ -1,0 +1,131 @@
+<div #selectElement [class]="rootClasses()" (focusout)="onFocusOut($event)">
+  <button
+    #triggerElement
+    type="button"
+    [id]="id()"
+    role="combobox"
+    [name]="name()"
+    [title]="title() || displayLabel()"
+    [class]="triggerClasses()"
+    [disabled]="isDisabled()"
+    [attr.aria-expanded]="open()"
+    [attr.aria-invalid]="invalid()"
+    [attr.aria-readonly]="readonly()"
+    [attr.aria-required]="required()"
+    [attr.aria-multiselectable]="multiple() || null"
+    aria-haspopup="listbox"
+    (click)="toggleDropdown()"
+    (keydown)="onTriggerKeydown($event)"
+  >
+    <!-- Single select label -->
+    @if (!multiple()) {
+      <span [class]="labelClasses()">{{ displayLabel() }}</span>
+    }
+
+    <!-- Multi select: chips o label con conteo -->
+    @if (multiple()) {
+      @if (selectedOptions().length === 0) {
+        <span [class]="labelClasses()">{{ placeholder() }}</span>
+      } @else if (selectedOptions().length <= maxChipsVisible()) {
+        <span class="flex flex-wrap gap-1">
+          @for (opt of selectedOptions(); track opt.value) {
+            <span class="inline-flex items-center gap-1 rounded bg-primary-100 px-1.5 py-0.5 text-xs font-medium text-primary-700">
+              {{ opt.label }}
+              @if (!isDisabled()) {
+                <ecom-button
+                (clicked)="onRemoveChip($event, opt)"
+                [title]="`Quitar ${opt.label}`"
+                class="p-0! w-4 h-4"
+                size="icon-sm"
+                variant="ghost"
+                >
+                  <fa-icon [icon]="faX" size="xs"></fa-icon>
+                </ecom-button>
+              }
+            </span>
+          }
+        </span>
+      } @else {
+        <!-- Demasiados chips: mostrar conteo -->
+        <span [class]="labelClasses()">{{ selectedOptions().length }} seleccionados</span>
+      }
+    }
+
+    @if (!isDisabled()) {
+      <fa-icon [icon]="faChevronDown" [class]="iconClasses()" />
+    }
+  </button>
+
+  <div [class]="dropdownClasses()">
+    @if (searchable()) {
+      <div [class]="searchWrapperClasses()">
+        <input
+          #searchInput
+          type="text"
+          [value]="searchTerm()"
+          [class]="searchInputClasses()"
+          placeholder="Buscar..."
+          (input)="onSearchInput($event)"
+        />
+      </div>
+    }
+
+    <ul [class]="optionsWrapperClasses()" role="listbox" [attr.aria-multiselectable]="multiple() || null" (scroll)="onScroll($event)">
+      @if (filteredOptions().length) {
+        @for (option of filteredOptions(); track trackByOption($index, option)) {
+          <li>
+            @if (template()) {
+              <ng-container
+                [ngTemplateOutlet]="template()?.template"
+                [ngTemplateOutletContext]="{ $implicit: option, selected: isSelected(option) }"
+              />
+            } @else {
+              <button
+                type="button"
+                role="option"
+                [class]="optionClasses(option)"
+                [disabled]="option.disabled"
+                [attr.aria-selected]="isSelected(option)"
+                (click)="onSelect(option)"
+                (keydown)="onOptionKeydown($event, option)"
+              >
+                <!-- Checkbox visual en multi-select -->
+                @if (multiple()) {
+                  <span class="mr-2 flex h-4 w-4 shrink-0 items-center justify-center rounded border"
+                    [class.bg-primary-600]="isSelected(option)"
+                    [class.border-primary-600]="isSelected(option)"
+                    [class.border-gray-300]="!isSelected(option)"
+                    aria-hidden="true"
+                  >
+                    @if (isSelected(option)) {
+                      <fa-icon class="text-primary text-xs" size="sm" [icon]="faCheck"></fa-icon>
+                    }
+                  </span>
+                }
+                {{ option.label }}
+              </button>
+            }
+          </li>
+        }
+      } @else {
+        <li>
+          <div [class]="emptyStateClasses()">Sin resultados</div>
+        </li>
+      }
+    </ul>
+
+    <!-- Footer multi-select con conteo y limpiar -->
+    @if (multiple() && selectedOptions().length > 0) {
+      <div class="flex items-center justify-between border-t px-3 py-2 text-xs text-gray-500">
+        <span>{{ selectedOptions().length }} seleccionado(s)</span>
+        <button
+          type="button"
+          class="text-primary-600 hover:underline"
+          (click)="onClearAll()"
+        >
+          Limpiar
+        </button>
+      </div>
+    }
+  </div>
+</div>

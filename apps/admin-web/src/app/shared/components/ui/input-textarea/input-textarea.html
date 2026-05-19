@@ -1,0 +1,16 @@
+<textarea
+  #textareaElement
+  [class]="textareaClasses()"
+  [id]="inputId()"
+  [value]="value()"
+  [name]="name()"
+  [rows]="rows()"
+  [style.min-height]="minHeight()"
+  [placeholder]="placeholder()"
+  [title]="title()"
+  [disabled]="isDisabled()"
+  [readOnly]="readonly()"
+  [required]="required()"
+  (input)="onInput($event)"
+  (blur)="onBlur()"
+></textarea>

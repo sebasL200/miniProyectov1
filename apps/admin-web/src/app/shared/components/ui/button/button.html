@@ -1,0 +1,33 @@
+<ng-template #content>
+  <ng-content select="[slot=icon]"></ng-content>
+  <ng-content></ng-content>
+</ng-template>
+
+@if (variant() === 'link' && routerLink()) {
+<a
+  [className]="hostClasses()"
+  [routerLink]="disabled() ? null : routerLink()"
+  (click)="stopIfDisabled($event)"
+  [target]="target()"
+>
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else if (variant() === 'link' && href()) {
+<a
+  [className]="hostClasses()"
+  [href]="disabled() ? null : href()"
+  (click)="stopIfDisabled($event)"
+  [target]="target()"
+>
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else {
+<button
+  [className]="hostClasses()"
+  [type]="type()"
+  [disabled]="disabled()"
+  (click)="stopIfDisabled($event)"
+>
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}

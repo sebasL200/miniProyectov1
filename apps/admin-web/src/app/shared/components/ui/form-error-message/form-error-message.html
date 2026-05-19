@@ -1,0 +1,5 @@
+@if (message(); as currentMessage) {
+  <p [class]="textClasses()" role="alert" aria-live="polite">
+    {{ currentMessage }}
+  </p>
+}

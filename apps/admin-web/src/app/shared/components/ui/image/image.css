@@ -1,0 +1,7 @@
+.image-error-slot:empty {
+  display: none;
+}
+
+.image-error-slot:not(:empty) + .image-placeholder {
+  display: none;
+}

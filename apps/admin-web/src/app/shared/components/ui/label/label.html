@@ -1,0 +1,12 @@
+<div [class]="headerClasses()">
+  <label [class]="labelClasses()" [attr.for]="forId() || null">
+    {{ label() }}
+    @if (isRequired()) {
+      <span [class]="requiredClasses()" aria-hidden="true">*</span>
+    }
+  </label>
+</div>
+
+<div [class]="contentClasses()">
+  <ng-content />
+</div>

@@ -1,0 +1,9 @@
+<div [class]="viewerClasses()">
+    @if (hasContent()) {
+        <div [class]="contentClasses()" [innerHTML]="value()"></div>
+    } @else {
+        <div [class]="contentClasses()">
+            <span class="text-muted-foreground">{{ placeholder() }}</span>
+        </div>
+    }
+</div>

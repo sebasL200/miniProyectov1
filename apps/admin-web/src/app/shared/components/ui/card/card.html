@@ -1,0 +1,30 @@
+@let hasHeader = hasSlot('header') || hasSlot('title') || hasSlot('subtitle');
+@let hasFooter = hasSlot('footer');
+<header>
+  @if (hasSlot('header')) {
+    <ng-content select="[slot=header]"></ng-content>
+  } @else {
+    @if (hasSlot('title')) {
+      <span class="text-lg font-semibold">
+        <ng-content select="[slot=title]" />
+      </span>
+    }
+    @if (hasSlot('subtitle')) {
+      <span class="text-sm text-gray-500">
+        <ng-content select="[slot=subtitle]" />
+      </span>
+    }
+  }
+</header>
+@if (hasHeader) {
+  <div class="my-4 border-t"></div>
+}
+<main>
+  <ng-content></ng-content>
+</main>
+@if (hasFooter) {
+  <div class="my-4 border-t"></div>
+}
+<footer>
+  <ng-content select="[slot=footer]"></ng-content>
+</footer>

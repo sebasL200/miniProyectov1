@@ -1,0 +1,27 @@
+<ecom-button
+  size="sm"
+  variant="ghost"
+  class="flex-row-reverse"
+  (clicked)="goTo(currentPage() - 1)"
+  [disabled]="currentPage() === 1">
+  <span>Volver</span>
+  <fa-icon [icon]="faArrowLeft" />
+</ecom-button>
+
+@for (page of visiblePages(); track page) {
+  <ecom-button
+    size="sm"
+    [variant]="page === currentPage() ? 'tertiary' : 'ghost'"
+    (clicked)="goTo(page)">
+    <span>{{ page }}</span>
+  </ecom-button>
+}
+
+<ecom-button
+  size="sm"
+  variant="ghost"
+  (clicked)="goTo(currentPage() + 1)"
+  [disabled]="currentPage() === pages()">
+  <span>Siguiente</span>
+  <fa-icon [icon]="faArrowRight"></fa-icon>
+</ecom-button>

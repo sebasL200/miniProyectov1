@@ -2,7 +2,24 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start": "nx run-many -t serve --projects=api,admin-web",
+    "start:api": "nx serve api",
+    "start:admin": "nx serve admin-web",
+    "build": "nx run-many -t build --projects=api,admin-web",
+    "build:api": "nx build api",
+    "build:admin": "nx build admin-web",
+    "test": "nx run-many -t test --projects=api,admin-web",
+    "test:api": "nx test api",
+    "test:admin": "nx test admin-web",
+    "lint": "nx run-many -t lint --projects=api,admin-web",
+    "lint:api": "nx lint api",
+    "lint:admin": "nx lint admin-web",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:logs": "docker compose logs -f",
+    "reset:all": "nx reset && rm -rf node_modules/.cache/nx"
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/core": "~21.2.0",
@@ -60,11 +77,17 @@
     "@angular/platform-browser": "~21.2.0",
     "@angular/platform-browser-dynamic": "~21.2.0",
     "@angular/router": "~21.2.0",
+    "@fortawesome/angular-fontawesome": "^4.0.0",
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
+    "@tailwindcss/postcss": "^4.3.0",
     "axios": "^1.6.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0"
   }
 }
