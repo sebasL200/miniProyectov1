@@ -1,0 +1,8 @@
+<a [routerLink]="item.href" [title]="item.label">
+  <ecom-card class="text-gray-500 transition-all duration-300 ease-in-out hover:cursor-pointer hover:text-primary">
+    <div class="flex flex-wrap items-center gap-4 text-sm md:text-base xl:text-xl font-bold p-4">
+      <fa-icon [icon]="item.icon"></fa-icon>
+      <h2>{{ item.label }}</h2>
+    </div>
+  </ecom-card>
+</a>

@@ -14,12 +14,12 @@ export const routes: Routes = [
       {
         path: 'catalogos',
         loadComponent: () =>
-          import('./categories/pages/catalogs/catalogs.page').then((m) => m.CatalogsPage),
+          import('./features/catalogs/pages/catalogs-page/catalogs-page').then((m) => m.CatalogsPageComponent),
       },
       {
         path: 'catalogos/categorias',
         loadComponent: () =>
-          import('./categories/pages/categories/categories.page').then((m) => m.CategoriesPage),
+          import('./features/categories/pages/categories/categories.page').then((m) => m.CategoriesPage),
       },
     ],
   },
