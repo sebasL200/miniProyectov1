@@ -1,7 +1,7 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-export interface CatalogLink {
+export interface CatalogLinkCardType {
   label: string;
-  icon: IconProp;
   href: string;
+  icon: IconProp;
 }

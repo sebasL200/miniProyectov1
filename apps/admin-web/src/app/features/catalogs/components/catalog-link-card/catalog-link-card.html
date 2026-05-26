@@ -1,8 +1,10 @@
-<a [routerLink]="item.href" [title]="item.label">
-  <ecom-card class="text-gray-500 transition-all duration-300 ease-in-out hover:cursor-pointer hover:text-primary">
-    <div class="flex flex-wrap items-center gap-4 text-sm md:text-base xl:text-xl font-bold p-4">
-      <fa-icon [icon]="item.icon"></fa-icon>
-      <h2>{{ item.label }}</h2>
-    </div>
-  </ecom-card>
-</a>
+
+<ecom-card class="hover:border-primary/50! border border-transparent transition-all duration-200 cursor-pointer h-full">
+  <a [routerLink]="href()" [title]="label()" class="flex flex-col items-center justify-center gap-3 text-center py-4 h-full">
+    <fa-icon [icon]="icon()" class="text-3xl text-primary"></fa-icon>
+    <h2 class="text-base font-semibold text-slate-800">{{ label() }}</h2>
+  </a>
+</ecom-card>
+
+
+

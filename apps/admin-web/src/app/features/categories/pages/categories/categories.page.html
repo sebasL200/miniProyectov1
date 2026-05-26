@@ -1,0 +1,11 @@
+<ecom-page-layout [loading]="isLoadingComposite()">
+    <header ecom-page-header title="Categorías" description="Administración de categorías presentes en el sitio"></header>
+    <article class="mb-5">
+        <section>
+            <ecom-category-overview-actions [totalCount]="totalCategories()" (creationRequest)="onCategoryCreationRequest($event)"/>
+        </section>
+    </article>
+    <main>
+        <ecom-categories-table [pagination]="pagination()" [data]="rows()" />
+    </main>
+</ecom-page-layout>

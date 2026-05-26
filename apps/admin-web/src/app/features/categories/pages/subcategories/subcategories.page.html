@@ -1,0 +1,35 @@
+<ecom-page-layout>
+    <header ecom-page-header title="Subcategorías" description="Gestiona todas las subcategorías de la categoría seleccionada"></header>
+    <section class="mb-5">
+        <article class="flex items-center justify-end gap-4">
+            <ecom-button variant="outline" (clicked)="onCancelChanges()">Cancelar</ecom-button>
+            <ecom-button (clicked)="onSaveChanges()" [disabled]="!hasPendingChanges()">Guardar</ecom-button>
+        </article>
+    </section>
+    <main class="flex flex-col gap-4">
+      <ecom-parent-category-summary-card [category]="parentCategory()"></ecom-parent-category-summary-card>
+        <ecom-card>
+            <ecom-category-form (submitted)="onSubmitCategory($event)" [actions]="formActions"></ecom-category-form>
+        </ecom-card>
+        @if (syncErrors().length > 0) {
+            <section class="rounded-lg border border-destructive bg-destructive-background p-4 text-destructive shadow-sm shadow-destructive/10" aria-live="polite">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-sm font-semibold">Errores al sincronizar subcategorías</h2>
+                        <p class="mt-1 text-xs">Corrige las categorías indicadas y vuelve a guardar los cambios.</p>
+                    </div>
+                    <button type="button" class="text-xs font-medium underline-offset-4 hover:underline" (click)="dismissSyncErrors()">Ocultar</button>
+                </div>
+                <ul class="mt-3 space-y-2">
+                    @for (error of syncErrors(); track error.operation + error.categoryName + error.reason) {
+                        <li class="rounded-md border border-destructive/30 bg-background/70 px-3 py-2">
+                            <p class="text-sm font-medium">{{ error.categoryName }}</p>
+                            <p class="text-xs"><span class="font-semibold">{{ error.operation }}:</span> {{ error.reason }}</p>
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+        <ecom-categories-table [data]="rows()" [pagination]="paginationOptions" [actions]="categoryTableActions"></ecom-categories-table>
+    </main>
+</ecom-page-layout>

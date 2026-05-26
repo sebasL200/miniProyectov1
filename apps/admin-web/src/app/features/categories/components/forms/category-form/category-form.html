@@ -1,0 +1,60 @@
+<form class="space-y-6" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="space-y-6">
+        <ecom-form-divider label="Información General" />
+        <div class="grid gap-4 grid-cols-1">
+            <ecom-label for="category-name" label="Nombre">
+                <ecom-input-text inputId="category-name" formControlName="name" placeholder="Nombre de la categoria" [required]="true" />
+                <ecom-form-error-message [control]="formGroup.controls.name" [messages]="{ required: 'El nombre de la categoría es obligatorio.' }" />
+            </ecom-label>
+
+            <ecom-label for="category-description" label="Descripción">
+                <ecom-input-textarea inputId="category-description" formControlName="description" placeholder="Describe la categoria con formato enriquecido" [required]="true" />
+                <ecom-form-error-message [control]="formGroup.controls.description" [messages]="{ required: 'La descripción de la categoría es obligatoria.' }" />
+            </ecom-label>
+
+            <ecom-label for="category-image" label="Imagen">
+                <ecom-input-image-upload
+                    inputId="category-image"
+                    formControlName="imageUrl"
+                    accept="image/png,image/jpeg,image/svg+xml"
+                    [config]="imageUploadConfig"
+                    title="Subir imagen"
+                />
+                <ecom-form-error-message
+                    [control]="formGroup.controls.imageUrl"
+                    [messages]="{
+                        maxlength: 'La imagen excede el tamaño permitido.'
+                    }"
+                />
+            </ecom-label>
+        </div>
+        <ecom-form-divider label="Información Técnica" />
+        <div class="grid grid-cols-1 gap-4">
+            <ecom-label for="category-meta-title" label="Título Meta">
+                <ecom-input-text inputId="category-meta-title" formControlName="metaTitle" placeholder="Meta titulo de la categoria" [required]="true" />
+                <ecom-form-error-message [control]="formGroup.controls.metaTitle" [messages]="{ required: 'El título meta es obligatorio.' }" />
+            </ecom-label>
+            <ecom-label for="category-meta-description" label="Descripción Meta">
+                <ecom-input-textarea inputId="category-meta-description" formControlName="metaDescription" placeholder="Resumen breve para buscadores" [required]="true" />
+                <ecom-form-error-message [control]="formGroup.controls.metaDescription" [messages]="{ required: 'La descripción meta es obligatoria.' }" />
+            </ecom-label>
+            <div class="grid grid-cols-2">
+                <div class="flex flex-col gap-2">
+                    <div class="block">
+                        <p>Visibilidad en el Menú</p>
+                        <span class="text-gray-500 text-xs"> (Si/No indica si se mostrará en el menú principal del sitio) </span>
+                    </div>
+                    <ecom-switch formControlName="visibleInMenu" />
+                </div>
+                <div class="flex flex-col gap-2">
+                    <div class="block">
+                        <p>Activa</p>
+                        <span class="text-gray-500 text-xs">(Indica si la categoria estará activa)</span>
+                    </div>
+                    <ecom-switch formControlName="isActive" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <ecom-form-actions class="flex items-center gap-2 justify-end" [actions]="actions()" [disableSubmit]="!canSubmit()" />
+</form>

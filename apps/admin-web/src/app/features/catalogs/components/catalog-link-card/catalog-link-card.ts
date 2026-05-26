@@ -1,16 +1,17 @@
-import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { Card } from '@shared/components';
-import { CatalogLink } from './catalog-link-card.types';
+import { Component, input } from '@angular/core';
+import { Card } from "@shared/components";
+import { RouterLink } from "@angular/router";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 @Component({
-  selector: 'app-catalog-link-card',
-  standalone: true,
+  selector: 'ecom-catalog-link-card',
   imports: [Card, RouterLink, FaIconComponent],
   templateUrl: './catalog-link-card.html',
-  styleUrls: ['./catalog-link-card.css']
+  styleUrl: './catalog-link-card.css',
 })
-export class CatalogLinkCardComponent {
-  @Input({ required: true }) item!: CatalogLink;
+export class CatalogLinkCard {
+  label = input.required<string>();
+  href = input.required<string>();
+  icon = input.required<IconProp>();
 }

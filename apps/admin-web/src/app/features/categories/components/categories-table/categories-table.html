@@ -1,0 +1,16 @@
+<ecom-card>
+    <ecom-data-grid [rowsLimit]="pagination().size" [columns]="columns()" [data]="rows()">
+        <ng-template ecom-cell-template template="showMenu" let-row let-column="column">
+            <ecom-switch variant="secondary" [(checked)]="row.visibleInMenu" (checkedChange)="toggleVisibleInMenu(row, $event)" />
+        </ng-template>
+        <ng-template ecom-cell-template template="status" let-row let-column="column">
+            <ecom-switch variant="secondary" [(checked)]="row.isActive" (checkedChange)="toggleStatus(row, $event)" />
+        </ng-template>
+        <ng-template ecom-cell-template template="actions" let-row let-column="column">
+            <ecom-category-table-actions [options]="actions()" (edit)="onEdit(row)" (delete)="onDelete(row)" (view)="onView(row)" (subcategories)="onViewSubcategories(row)" />
+        </ng-template>
+    </ecom-data-grid>
+    @if (pagination().showPagination) {
+        <ecom-pagination-footer class="mt-5" [currentPage]="pagination().page" [pages]="pagination().pages" (pageChange)="onPageChange($event)" />
+    }
+</ecom-card>

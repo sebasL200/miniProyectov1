@@ -1,25 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CatalogLinkCardComponent } from './catalog-link-card';
+import { CatalogLinkCard } from './catalog-link-card';
 import { provideRouter } from '@angular/router';
 import { faBoxes } from '@fortawesome/free-solid-svg-icons';
 
-describe('CatalogLinkCardComponent', () => {
-  let component: CatalogLinkCardComponent;
-  let fixture: ComponentFixture<CatalogLinkCardComponent>;
+describe('CatalogLinkCard', () => {
+  let component: CatalogLinkCard;
+  let fixture: ComponentFixture<CatalogLinkCard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CatalogLinkCardComponent],
+      imports: [CatalogLinkCard],
       providers: [provideRouter([])]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CatalogLinkCardComponent);
+    fixture = TestBed.createComponent(CatalogLinkCard);
     component = fixture.componentInstance;
-    component.item = {
-      label: 'Test Catalog',
-      icon: faBoxes,
-      href: 'test'
-    };
+    fixture.componentRef.setInput('label', 'Test Catalog');
+    fixture.componentRef.setInput('icon', faBoxes);
+    fixture.componentRef.setInput('href', 'test');
     fixture.detectChanges();
   });
 

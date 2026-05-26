@@ -1,8 +1,8 @@
 import {
   CategoryDto,
   CategoryWithChildrenDto,
+  CategorySummaryDto,
 } from '@org/contracts';
-import type { CategorySummaryDto } from '@org/contracts';
 
 export interface CategoryRow {
   id: string;
@@ -16,6 +16,7 @@ export interface CategoryRow {
     name: string;
     slug: string;
   } | null;
+  attributes?: { id: string }[];
   description: string | null;
   imageUrl: string | null;
   metaTitle: string | null;
@@ -45,7 +46,7 @@ export function toCategoryDto(row?: CategoryRow | null): CategoryDto | null {
     isActive: row.isActive,
     visibleInMenu: row.visibleInMenu,
     parent,
-    hasAttributes: false,
+    hasAttributes: Boolean(row.attributes?.length),
     parentId: row.parentId ?? undefined,
     parentName: row.parent?.name ?? undefined,
     description: row.description ?? undefined,

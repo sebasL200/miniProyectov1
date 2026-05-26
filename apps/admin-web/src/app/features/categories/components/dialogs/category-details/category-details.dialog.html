@@ -1,0 +1,40 @@
+<ecom-page-layout class="flex flex-col justify-between" [loading]="isLoading()">
+    @if (!isLoading() && category(); as category) {
+        <main class="flex flex-col gap-2 overflow-y-auto">
+            <section class="flex items-center gap-4">
+                <ecom-badge size="xl">{{ activeLabel() }}</ecom-badge>
+                <ecom-badge variant="secondary" size="xl">{{ visibleInMenuLabel() }}</ecom-badge>
+            </section>
+            <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <ecom-label class="col-span-2" label="Imagen">
+                    <div class="flex items-center justify-center">
+                        <ecom-image
+                            size="2xl"
+                            class="rounded-lg border"
+                            [src]="imageUrl()"
+                            [alt]="imageAlt()"
+                        />
+                    </div>
+                </ecom-label>
+                <ecom-label label="Nombre">
+                    <ecom-input-text [value]="category.name" [readonly]="true" [autofocus]="true"></ecom-input-text>
+                </ecom-label>
+                <ecom-label label="Slug">
+                    <ecom-input-text [value]="category.slug" [readonly]="true" [autofocus]="true"></ecom-input-text>
+                </ecom-label>
+                <ecom-label class="col-span-2" label="Descripción">
+                    <ecom-input-textarea class="resize-none" [value]="category.description" [readonly]="true" [autofocus]="true"></ecom-input-textarea>
+                </ecom-label>
+                <ecom-label class="col-span-2 md:col-span-1" label="Título Meta">
+                    <ecom-input-text [value]="category.metaTitle" [readonly]="true" [autofocus]="true" />
+                </ecom-label>
+                <ecom-label class="col-span-2 md:col-span-1" label="Descripción Meta">
+                    <ecom-input-textarea class="resize-none" [value]="category.metaDescription" [readonly]="true" [autofocus]="true"></ecom-input-textarea>
+                </ecom-label>
+            </section>
+        </main>
+    }
+    <footer class="flex items-center justify-end">
+        <ecom-button variant="outline" (click)="closeDialog()">Cerrar</ecom-button>
+    </footer>
+</ecom-page-layout>

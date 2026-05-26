@@ -1,7 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { ListCategoriesQueryDto } from '@org/contracts';
-import { validateCreateBatchBody, validateCreateCategoryBody, validateDeleteParams, validateGetParams, validateGetQuery, validateListCategoriesQuery, validateSyncChildrenInput, validateUpdateCategoryBody } from './validations/categories.validation';
+import {
+  validateCreateBatchBody,
+  validateCreateCategoryBody,
+  validateDeleteParams,
+  validateGetParams,
+  validateGetQuery,
+  validateListCategoriesQuery,
+  validateSyncChildrenInput,
+  validateUpdateCategoryBody,
+} from './validations/categories.validation';
 import { SuccessResponse } from '../common/interceptors/success-response.decorator';
 
 @Controller('categories')

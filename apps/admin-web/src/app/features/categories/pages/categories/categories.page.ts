@@ -1,235 +1,275 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal, signal } from '@angular/core';
+import { CategoriesService } from './categories.service';
+import { createPagination, EntityData, PersistedRecord } from '../../../../shared/interfaces';
+import { PageLayout, PageHeader } from '../../../../shared/components';
+import { CategoryOverviewActions } from '../../components/category-overview-actions/category-overview-actions';
+import { RegisterCategoryStrategy } from '../../components/category-overview-actions/types';
+import { CategoriesTable } from '../../components/categories-table/categories-table';
+import { Category } from '../../../../shared/models';
+import { toPersistedRecord } from '../../../../shared/mappers/entity-record.mapper';
+import { CategoriesTableService } from '../../components/categories-table/categories-table.service';
+import {
+    CategoryStatusChange,
+    CategoryTableActionEvent,
+    CategoryVisibleInMenuChange,
+} from '../../components/categories-table/types';
+import { CategoryActionsService } from '../../services/category-actions/category-actions.service';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { DialogService } from '../../../../shared/services/dialog/dialog.service';
+import { RegisterCategoryDialog } from '../../components/dialogs/register-category/register-category.dialog';
+import { DIMENSIONS } from '../../../../shared/constants/dimensions.consts';
 import { Router } from '@angular/router';
-import { CategoriesApiService, CategoryDto } from '../../services/categories-api.service';
-import { PageLayout, PageHeader, Card, StatCard, Button, Switch, CellTemplate, PaginationFooter, DataGrid } from '@shared/components';
-import { Dropdown } from '@shared/components/ui/dropdown/dropdown';
-import { DropdownTrigger } from '@shared/components/ui/dropdown/components/dropdown-trigger/dropdown-trigger';
-import { DropdownContent } from '@shared/components/ui/dropdown/components/dropdown-content/dropdown-content';
-import { DropdownGroup } from '@shared/components/ui/dropdown/components/dropdown-group/dropdown-group';
-import { DropdownItem } from '@shared/components/ui/dropdown/components/dropdown-item/dropdown-item';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faChevronDown, faPenNib, faEye, faSquarePlus, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { DataGridColumn } from '@shared/components/ui/data-grid/data-grid.types';
-import { createPagination } from '@shared/interfaces';
-import { ToastService } from '@shared/services/toast/toast.service';
-import { DialogService } from '@shared/services/dialog/dialog.service';
+import { CategoryDetailsDialog } from '../../components/dialogs/category-details/category-details.dialog';
 
 @Component({
-  selector: 'app-categories-page',
-  standalone: true,
-  imports: [
-    PageLayout,
-    PageHeader,
-    Card,
-    StatCard,
-    DataGrid,
-    Button,
-    Switch,
-    CellTemplate,
-    PaginationFooter,
-    Dropdown,
-    DropdownTrigger,
-    DropdownContent,
-    DropdownGroup,
-    DropdownItem,
-    FaIconComponent
-  ],
-  template: `
-    <ecom-page-layout [loading]="loading()">
-      <header ecom-page-header title="Categorías" description="Administración de categorías presentes en el sitio"></header>
-
-      <article class="mb-5 flex items-center justify-between">
-        <ecom-stat-card [value]="totalCategories()" />
-        
-        <ecom-dropdown>
-          <ecom-dropdown-trigger>
-            <ecom-button class="flex items-center gap-2 flex-row-reverse" variant="primary">
-              <span>Nuevo Registro</span>
-              <fa-icon [icon]="faChevronDown" />
-            </ecom-button>
-          </ecom-dropdown-trigger>
-          <ecom-dropdown-content class="w-48 bg-white border border-gray-200 shadow-lg rounded-md py-1">
-            <ecom-dropdown-group>
-              <ecom-dropdown-item label="Registro único" (click)="onCategoryCreationRequest('single')" />
-              <ecom-dropdown-item label="Registro múltiple" (click)="onCategoryCreationRequest('multiple')" />
-            </ecom-dropdown-group>
-          </ecom-dropdown-content>
-        </ecom-dropdown>
-      </article>
-
-      <main>
-        <ecom-card>
-          <ecom-data-grid [columns]="columns" [data]="categories()">
-            <!-- Switch Visibilidad Menú -->
-            <ng-template ecom-cell-template template="showMenu" let-row>
-              <ecom-switch variant="secondary" [checked]="row.visibleInMenu" (checkedChange)="toggleMenuVisibility(row, $event)"></ecom-switch>
-            </ng-template>
-
-            <!-- Switch Estado Activo -->
-            <ng-template ecom-cell-template template="status" let-row>
-              <ecom-switch variant="secondary" [checked]="row.isActive" (checkedChange)="toggleStatus(row, $event)"></ecom-switch>
-            </ng-template>
-
-            <!-- Acciones -->
-            <ng-template ecom-cell-template template="actions" let-row>
-              <div class="flex gap-2 justify-center">
-                <ecom-button class="text-gray-700/80 hover:text-primary" title="Editar" variant="outline" size="icon-sm" (clicked)="onEdit(row)">
-                  <fa-icon [icon]="faPenNib" />
-                </ecom-button>
-                <ecom-button class="text-gray-700/80 hover:text-primary" title="Detalles" variant="outline" size="icon-sm" (clicked)="onView(row)">
-                  <fa-icon [icon]="faEye" />
-                </ecom-button>
-                <ecom-button class="text-gray-700/80 hover:text-primary" title="Subcategorías" variant="outline" size="icon-sm" (clicked)="onViewSubcategories(row)">
-                  <fa-icon [icon]="faSquarePlus" />
-                </ecom-button>
-                <ecom-button class="text-gray-700/80 hover:text-red-500" title="Eliminar" variant="outline" size="icon-sm" (clicked)="deleteCategory(row)">
-                  <fa-icon [icon]="faTrashCan" />
-                </ecom-button>
-              </div>
-            </ng-template>
-          </ecom-data-grid>
-
-          @if (pagination().showPagination) {
-            <ecom-pagination-footer class="mt-5" [currentPage]="pagination().page" [pages]="pagination().pages" (pageChange)="onPageChange($event)" />
-          }
-        </ecom-card>
-      </main>
-    </ecom-page-layout>
-  `
+    selector: 'app-categories-page',
+    imports: [PageLayout, PageHeader, CategoryOverviewActions, CategoriesTable],
+    templateUrl: './categories.page.html',
+    styleUrl: './categories.page.css',
+    providers: [CategoriesService, CategoriesTableService, CategoryActionsService],
 })
 export class CategoriesPage implements OnInit {
-  private readonly api = inject(CategoriesApiService);
-  private readonly toastService = inject(ToastService);
-  private readonly dialogService = inject(DialogService);
-  private readonly router = inject(Router);
+    private readonly service: CategoriesService = inject(CategoriesService);
+    private readonly tableService = inject(CategoriesTableService);
+    private readonly categoryActionsService = inject(CategoryActionsService);
+    private readonly toastService = inject(ToastService);
+    private readonly dialogService: DialogService = inject(DialogService);
+    private readonly router: Router = inject(Router);
 
-  faChevronDown = faChevronDown;
-  faPenNib = faPenNib;
-  faEye = faEye;
-  faSquarePlus = faSquarePlus;
-  faTrashCan = faTrashCan;
+    isLoadingComposite = signal(true);
+    totalCategories = signal<number>(0);
+    private readonly totalPages = signal<number>(0);
+    private readonly currentPage = computed(() => this.service.paginationParams().page);
+    readonly pageSize = 5;
+    readonly pagination = computed(() =>
+        createPagination({
+            showPagination: true,
+            page: this.currentPage(),
+            size: this.pageSize,
+            total: this.totalCategories(),
+            pages: this.totalPages(),
+        }),
+    );
+    categories = signal<Category[]>([]);
+    rows: Signal<PersistedRecord<Category & EntityData>[]> = computed(() =>
+        this.categories().map(toPersistedRecord),
+    );
 
-  columns: DataGridColumn[] = [
-    { field: 'name', label: 'Nombre' },
-    { field: 'slug', label: 'Slug' },
-    { field: 'parentName', label: 'Categoría Padre' },
-    { field: 'visibleInMenu', label: 'Visibilidad en el Menú', template: 'showMenu' },
-    { field: 'isActive', label: 'Estado', template: 'status' },
-    { label: 'Acciones', template: 'actions' }
-  ];
+    ngOnInit(): void {
+        this.loadPageComposite();
+    }
 
-  categories = signal<CategoryDto[]>([]);
-  loading = signal(true);
-
-  readonly pageSize = 5;
-  totalCategories = signal<number>(0);
-  totalPages = signal<number>(0);
-  currentPage = signal<number>(1);
-
-  readonly pagination = computed(() =>
-    createPagination({
-      showPagination: true,
-      page: this.currentPage(),
-      size: this.pageSize,
-      total: this.totalCategories(),
-      pages: this.totalPages(),
-    }),
-  );
-
-  ngOnInit() {
-    this.loadCategories();
-  }
-
-  loadCategories() {
-    this.loading.set(true);
-    this.api.listCategories({ page: this.currentPage(), pageSize: this.pageSize }).subscribe({
-      next: (result) => {
-        this.categories.set((result.categories || []).filter((c: any): c is CategoryDto => c !== null));
-        this.totalCategories.set(result.totalCount || 0);
-        this.totalPages.set(result.totalPages || 0);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.toastService.showError('Error al cargar las categorías. Por favor, inténtalo de nuevo.');
-      }
-    });
-  }
-
-  toggleStatus(category: CategoryDto, isActive: boolean) {
-    const originalValue = category.isActive;
-    category.isActive = isActive;
-    
-    this.api.updateCategory(category.id, { isActive }).subscribe({
-      next: () => {
-        this.toastService.showSuccess(`Estado de la categoría "${category.name}" actualizado correctamente.`);
-      },
-      error: () => {
-        category.isActive = originalValue;
-        this.toastService.showError(`Error al actualizar el estado de la categoría "${category.name}".`);
-      }
-    });
-  }
-
-  toggleMenuVisibility(category: CategoryDto, visibleInMenu: boolean) {
-    const originalValue = category.visibleInMenu;
-    category.visibleInMenu = visibleInMenu;
-    
-    this.api.updateCategory(category.id, { visibleInMenu }).subscribe({
-      next: () => {
-        this.toastService.showSuccess(`Visibilidad en menú de la categoría "${category.name}" actualizada correctamente.`);
-      },
-      error: () => {
-        category.visibleInMenu = originalValue;
-        this.toastService.showError(`Error al actualizar la visibilidad en menú de la categoría "${category.name}".`);
-      }
-    });
-  }
-
-  deleteCategory(cat: CategoryDto) {
-    this.dialogService
-      .openConfirm({
-        message: '¿Estás seguro de que deseas eliminar esta categoría?',
-        confirmText: 'Eliminar',
-        confirmVariant: 'danger',
-      })
-      .onClose$.subscribe((confirmed) => {
-        if (confirmed) {
-          this.api.deleteCategory(cat.id).subscribe({
-            next: () => {
-              this.loadCategories();
-              this.toastService.showSuccess('Categoría eliminada correctamente.');
+    private loadPageComposite(): void {
+        this.isLoadingComposite.set(true);
+        this.service.getCompositeCategoriesPage().subscribe({
+            next: (response) => {
+                this.totalCategories.set(response.data.table.totalCount);
+                this.totalPages.set(response.data.table.totalPages);
+                this.categories.set(response.data.table.categories);
+                this.registerTableEventHandlers();
+                this.isLoadingComposite.set(false);
             },
             error: () => {
-              this.toastService.showError('Error al eliminar la categoría.');
-            }
-          });
-        }
-      });
-  }
-
-  onPageChange(page: number) {
-    this.currentPage.set(page);
-    this.loadCategories();
-  }
-
-  onCategoryCreationRequest(strategy: 'single' | 'multiple') {
-    if (strategy === 'single') {
-      this.toastService.showSuccess('Registro único (Próximamente)');
-    } else {
-      this.toastService.showSuccess('Registro múltiple (Próximamente)');
+                this.isLoadingComposite.set(false);
+                this.toastService.showError(
+                    'Error al cargar las categorías. Por favor, inténtalo de nuevo.',
+                );
+            },
+        });
     }
-  }
 
-  onEdit(row: CategoryDto) {
-    this.router.navigate([`catalogos/categorias/${row.id}/edit`]);
-  }
+    private registerTableEventHandlers(): void {
+        this.registerPageChangeHandler();
+        this.registerCategoryActionHandler();
+        this.registerToggleCategoryStatusHandler();
+        this.registerToggleVisibilityHandler();
+    }
 
-  onView(row: CategoryDto) {
-    this.toastService.showSuccess(`Ver detalles de: ${row.name} (Próximamente)`);
-  }
+    private registerToggleVisibilityHandler(): void {
+        this.tableService.categoryVisibleInMenuChange$.subscribe((event) =>
+            this.toggleVisibilityHandler(event),
+        );
+    }
 
-  onViewSubcategories(row: CategoryDto) {
-    this.router.navigate([`catalogos/categorias/${row.id}/subcategories`]);
-  }
+    private toggleVisibilityHandler(event: CategoryVisibleInMenuChange): void {
+        const { snapshot, newValue } = event;
+        const category = this.findCategoryById(snapshot.data._recordKey);
+        this.categoryActionsService
+            .toggleCategoryVisibilityInMenu({
+                id: snapshot.data._recordKey,
+                visibleInMenu: newValue,
+            })
+            .subscribe({
+                next: ({ data }) => this.onVisibilityChangeSuccess(data),
+                error: () => this.onVisibilityChangeError(category, newValue),
+            });
+    }
+
+    private onVisibilityChangeSuccess(category: Category | undefined): void {
+        this.toastService.showSuccess(
+            `Visibilidad en menú de la categoría "${category?.name}" actualizada correctamente.`,
+        );
+    }
+
+    private onVisibilityChangeError(category: Category | undefined, newValue: boolean): void {
+        this.revertCategoryVisibility(category?.id ?? '', newValue);
+        this.toastService.showError(
+            `Error al actualizar la visibilidad en menú de la categoría "${category?.name}".`,
+        );
+    }
+
+    private registerToggleCategoryStatusHandler(): void {
+        this.tableService.categoryStatusChange$.subscribe((event) =>
+            this.toggleCategoryStatusHandler(event),
+        );
+    }
+
+    private toggleCategoryStatusHandler(event: CategoryStatusChange): void {
+        const { snapshot, newValue } = event;
+        const category = this.findCategoryById(snapshot.data._recordKey);
+        this.categoryActionsService
+            .toggleCategoryActiveStatus({
+                id: snapshot.data._recordKey,
+                isActive: newValue,
+            })
+            .subscribe({
+                next: ({ data }) => this.onStatusChangeSuccess(data),
+                error: () => this.onStatusChangeError(category, newValue),
+            });
+    }
+
+    private onStatusChangeSuccess(category: Category | undefined): void {
+        this.toastService.showSuccess(
+            `Estado de la categoría "${category?.name}" actualizado correctamente.`,
+        );
+    }
+
+    private onStatusChangeError(category: Category | undefined, newValue: boolean): void {
+        this.revertCategoryStatus(category?.id ?? '', newValue);
+        this.toastService.showError(
+            `Error al actualizar el estado de la categoría "${category?.name}".`,
+        );
+    }
+
+    private registerCategoryActionHandler(): void {
+        this.tableService.actionCategory$.subscribe((event) => this.handleCategoryAction(event));
+    }
+
+    private handleCategoryAction(event: CategoryTableActionEvent): void {
+        const { action, record } = event;
+        const categoryId = record.data._recordKey;
+        if (action === 'edit') {
+            this.handleEditCategory(categoryId);
+        } else if (action === 'delete') {
+            this.handleDeleteCategory(categoryId);
+        } else if (action === 'view') {
+            this.handleViewCategory(categoryId);
+        } else if (action === 'viewSubcategories') {
+            this.handleViewSubcategories(categoryId);
+        }
+    }
+
+    private handleEditCategory(categoryId: string): void {
+        this.router.navigate([`catalogs/categories/${categoryId}/edit`]);
+    }
+
+    private handleDeleteCategory(categoryId: string): void {
+        this.dialogService
+            .openConfirm({
+                message: '¿Estás seguro de que deseas eliminar esta categoría?',
+                confirmText: 'Eliminar',
+                confirmVariant: 'danger',
+            })
+            .onClose$.subscribe((confirmed) => {
+                if (confirmed) {
+                    this.categoryActionsService.deleteCategory(categoryId).subscribe({
+                        next: () => {
+                            this.fetchCategories();
+                            this.toastService.showSuccess('Categoría eliminada correctamente.');
+                        },
+                        error: () => {
+                            this.toastService.showError('Error al eliminar la categoría.');
+                        },
+                    });
+                }
+            });
+    }
+
+    private handleViewCategory(categoryId: string): void {
+        this.dialogService.open(CategoryDetailsDialog, categoryId, {
+            title: 'Detalles de la Categoría',
+            width: DIMENSIONS.MODAL.WIDTH,
+            height: DIMENSIONS.MODAL.HEIGHT,
+        });
+    }
+
+    private handleViewSubcategories(categoryId: string): void {
+        this.router.navigate([`catalogs/categories/${categoryId}/subcategories`]);
+    }
+
+    private registerPageChangeHandler(): void {
+        this.tableService.pageChange$.subscribe((newPage) => this.handlePageChange(newPage));
+    }
+
+    private handlePageChange(newPage: number): void {
+        this.service.paginationParams.update((params) => ({
+            ...params,
+            page: newPage,
+        }));
+        this.fetchCategories();
+    }
+
+    onCategoryCreationRequest(strategy: RegisterCategoryStrategy): void {
+        if (strategy === 'single') {
+            this.registerSingleCategory();
+        }
+        if (strategy === 'multiple') {
+            this.registerBulkCategory();
+        }
+    }
+
+    private registerSingleCategory(): void {
+        this.dialogService
+            .open(RegisterCategoryDialog, undefined, {
+                title: 'Nuevo Registro',
+                width: DIMENSIONS.MODAL.WIDTH,
+                height: DIMENSIONS.MODAL.HEIGHT,
+            })
+            .onClose$.subscribe((result) => {
+                if (result) {
+                    this.fetchCategories();
+                    this.toastService.showSuccess('Categoría creada correctamente.');
+                }
+            });
+    }
+
+    private registerBulkCategory(): void {
+        this.router.navigate(['catalogs/categories/bulk-registration']);
+    }
+
+    private fetchCategories(): void {
+        this.service.fetchCategoriesPage().subscribe({
+            next: (response) => {
+                this.categories.set(response.data.categories);
+                this.totalCategories.set(response.data.totalCount);
+                this.totalPages.set(response.data.totalPages);
+            },
+        });
+    }
+
+    private revertCategoryStatus(id: string, failedValue: boolean): void {
+        this.categories.update((categories) =>
+            categories.map((c) => (c.id === id ? { ...c, isActive: !failedValue } : c)),
+        );
+    }
+
+    private revertCategoryVisibility(id: string, failedValue: boolean): void {
+        this.categories.update((categories) =>
+            categories.map((c) => (c.id === id ? { ...c, visibleInMenu: !failedValue } : c)),
+        );
+    }
+
+    private findCategoryById(id: string): Category | undefined {
+        return this.categories().find((c) => c.id === id);
+    }
 }

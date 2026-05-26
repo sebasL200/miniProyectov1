@@ -1,0 +1,19 @@
+<ecom-card>
+  <div class="space-y-5">
+    <ecom-form-divider label="Detalles categoría padre" />
+    @if (parentCategory()) {
+    <div class="grid grid-cols-2 gap-4 text-gray-500">
+      <ecom-label label="Nombre">
+        <ecom-input-text class="border-none shadow-none cursor-default focus-visible:ring-0 text-gray-500! px-0" [value]="parentCategory()!.name" [readonly]="true" />
+      </ecom-label>
+      <ecom-label label="Descripción">
+        <ecom-input-text class="border-none shadow-none cursor-default focus-visible:ring-0 text-gray-500! px-0" [value]="parentCategory()!.description" [readonly]="true" />
+      </ecom-label>
+    </div>
+    } @else {
+    <div class="flex items-center justify-center h-32">
+      <ecom-spinner />
+    </div>
+    }
+  </div>
+</ecom-card>
