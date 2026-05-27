@@ -1,4 +1,4 @@
-import { CategoryDto } from './category.dto';
+import { CategoryDto } from './category.dto.js';
 
 export class ListCategoriesResultDto {
   categories!: (CategoryDto | null)[];

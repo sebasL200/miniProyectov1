@@ -2,23 +2,14 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService implements OnModuleInit, OnModuleDestroy {
-  private readonly prismaClient: PrismaClient;
-
-  constructor() {
-    // Eliminamos la lógica de SQLite y le pasamos la URL de Postgres
-    this.prismaClient = new PrismaClient();
-  }
-
-  get client(): PrismaClient {
-    return this.prismaClient;
-  }
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  // Al extender PrismaClient, ya hereda todos los métodos de la base de datos automáticamente
 
   async onModuleInit() {
-    await this.prismaClient.$connect();
+    await this.$connect();
   }
 
   async onModuleDestroy() {
-    await this.prismaClient.$disconnect();
+    await this.$disconnect();
   }
 }

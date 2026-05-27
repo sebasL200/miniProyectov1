@@ -18,8 +18,8 @@ export const routes: Routes = [
       },
       {
         path: 'catalogos/categorias',
-        loadComponent: () =>
-          import('./features/categories/pages/categories/categories.page').then((m) => m.CategoriesPage),
+        loadChildren: () =>
+          import('./features/categories/categories.routes').then((m) => m.categoriesRoutes),
       },
     ],
   },

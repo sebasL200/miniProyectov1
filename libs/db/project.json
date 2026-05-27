@@ -1,0 +1,30 @@
+{
+  "name": "db",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/db/src",
+  "tags": ["scope:db", "type:data-access"],
+  "targets": {
+    "migrate-dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx prisma migrate dev",
+        "cwd": "libs/db"
+      }
+    },
+    "migrate-reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx prisma migrate reset --force",
+        "cwd": "libs/db"
+      }
+    },
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx prisma generate",
+        "cwd": "libs/db"
+      }
+    }
+  }
+}

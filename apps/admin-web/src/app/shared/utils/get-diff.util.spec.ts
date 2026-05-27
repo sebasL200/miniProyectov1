@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import { getDiff } from './get-diff.util';
 
 describe('getDiff', () => {

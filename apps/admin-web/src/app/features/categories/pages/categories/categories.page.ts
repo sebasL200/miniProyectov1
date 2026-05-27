@@ -170,7 +170,7 @@ export class CategoriesPage implements OnInit {
     }
 
     private handleEditCategory(categoryId: string): void {
-        this.router.navigate([`catalogs/categories/${categoryId}/edit`]);
+        this.router.navigate([`catalogos/categorias/${categoryId}/edit`]);
     }
 
     private handleDeleteCategory(categoryId: string): void {
@@ -204,7 +204,7 @@ export class CategoriesPage implements OnInit {
     }
 
     private handleViewSubcategories(categoryId: string): void {
-        this.router.navigate([`catalogs/categories/${categoryId}/subcategories`]);
+        this.router.navigate([`catalogos/categorias/${categoryId}/subcategories`]);
     }
 
     private registerPageChangeHandler(): void {
@@ -244,7 +244,7 @@ export class CategoriesPage implements OnInit {
     }
 
     private registerBulkCategory(): void {
-        this.router.navigate(['catalogs/categories/bulk-registration']);
+        this.router.navigate(['catalogos/categorias/bulk-registration']);
     }
 
     private fetchCategories(): void {

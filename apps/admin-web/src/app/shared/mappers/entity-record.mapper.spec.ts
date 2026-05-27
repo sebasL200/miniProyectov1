@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from 'vitest';
 import {
   partitionRecords,
   toDraftRecord,
@@ -7,7 +6,7 @@ import {
 
 describe('entity-record.mapper', () => {
   it('creates isolated draft records with a generated record key', () => {
-    const randomUuid = vi
+    const randomUuid = jest
       .spyOn(crypto, 'randomUUID')
       .mockReturnValue('00000000-0000-4000-8000-000000000000');
     const source = { name: 'Nike' };

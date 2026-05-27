@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import { buildSubcategoriesSyncFailureMessage } from './subcategories-sync-result-message.util';
 import {
   SyncBatchOperation,

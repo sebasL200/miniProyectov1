@@ -24,7 +24,8 @@
       "@categories/*": ["apps/admin-web/src/app/features/categories/*"],
       "@environments/environment": ["apps/admin-web/src/environments/environment.ts"],
       "@org/contracts": ["libs/shared/contracts/src/index.ts"],
-      "@org/validations": ["libs/shared/validations/src/index.ts"]
+      "@org/validations": ["libs/shared/validations/src/index.ts"],
+      "@org/db": ["libs/db/src/index.ts"]
     }
   }
 }

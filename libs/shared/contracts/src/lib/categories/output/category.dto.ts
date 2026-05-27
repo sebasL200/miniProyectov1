@@ -1,4 +1,4 @@
-import type { CategorySummaryDto } from '../../common/dto/output/entity-summary.dto';
+import type { CategorySummaryDto } from '../../common/dto/output/entity-summary.dto.js';
 
 export class CategoryDto {
   id!: string;
