@@ -1,4 +1,4 @@
-import { objectValue, optionalPlainObject } from './object.validation';
+import { objectValue, optionalPlainObject } from './object.validation.js';
 
 describe('object validations', () => {
   it('returns record values as-is', () => {

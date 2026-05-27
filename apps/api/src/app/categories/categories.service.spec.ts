@@ -1,268 +1,118 @@
-jest.mock('../prisma/prisma.service', () => ({
-  PrismaService: class PrismaService {},
-}));
-
-import { BadRequestException, ConflictException } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { PaginationService } from '../common/pagination/pagination.service';
+import { CreateBatchCategoriesService } from './use-cases/commands/create-batch-categories/create-batch-categories.service';
+import { CreateCategoryService } from './use-cases/commands/create-category/create-category.service';
+import { DeleteCategoryService } from './use-cases/commands/delete-category/delete-category.service';
+import { SyncCategoryChildrenService } from './use-cases/commands/sync-category-children/sync-category-children.service';
+import { UpdateCategoryService } from './use-cases/commands/update-category/update-category.service';
+import { GetCategoryService } from './use-cases/queries/get-category/get-category.service';
+import { ListCategoriesService } from './use-cases/queries/list-categories/list-categories.service';
 
 describe('CategoriesService', () => {
-  const id = '018f4dc4-5f51-7c55-9b8f-15fbdd99b101';
-  const parentId = '018f4dc4-5f51-7c55-9b8f-15fbdd99b102';
-  const row = {
-    id,
-    name: 'Category',
-    slug: 'category',
-    isActive: true,
-    visibleInMenu: true,
-    parentId,
-    parent: { id: parentId, name: 'Parent', slug: 'parent' },
-    attributes: [],
-    description: 'text',
-    imageUrl: 'data:image/png;base64,category',
-    metaTitle: 'Meta title',
-    metaDescription: 'Meta description',
-    createdAt: new Date('2026-04-13T00:00:00.000Z'),
-    updatedAt: new Date('2026-04-13T00:00:00.000Z'),
-    deletedAt: null,
-  };
-
-  let category: {
-    create: jest.Mock;
-    findFirst: jest.Mock;
-    findMany: jest.Mock;
-    update: jest.Mock;
-    updateMany: jest.Mock;
-    count: jest.Mock;
-  };
+  const categoryId = '018f4dc4-5f51-7c55-9b8f-15fbdd99b101';
+  let createCategory: jest.Mocked<Pick<CreateCategoryService, 'execute'>>;
+  let createBatchCategories: jest.Mocked<
+    Pick<CreateBatchCategoriesService, 'execute'>
+  >;
+  let listCategories: jest.Mocked<Pick<ListCategoriesService, 'execute'>>;
+  let getCategory: jest.Mocked<Pick<GetCategoryService, 'execute'>>;
+  let updateCategory: jest.Mocked<Pick<UpdateCategoryService, 'execute'>>;
+  let deleteCategory: jest.Mocked<Pick<DeleteCategoryService, 'execute'>>;
+  let syncCategoryChildren: jest.Mocked<
+    Pick<SyncCategoryChildrenService, 'execute'>
+  >;
   let service: CategoriesService;
 
   beforeEach(() => {
-    category = {
-      create: jest.fn(),
-      findFirst: jest.fn(),
-      findMany: jest.fn(),
-      update: jest.fn(),
-      updateMany: jest.fn(),
-      count: jest.fn(),
-    };
+    createCategory = { execute: jest.fn() };
+    createBatchCategories = { execute: jest.fn() };
+    listCategories = { execute: jest.fn() };
+    getCategory = { execute: jest.fn() };
+    updateCategory = { execute: jest.fn() };
+    deleteCategory = { execute: jest.fn() };
+    syncCategoryChildren = { execute: jest.fn() };
     service = new CategoriesService(
-      {
-        client: { category },
-      } as never,
-      new PaginationService(),
+      createCategory as CreateCategoryService,
+      createBatchCategories as CreateBatchCategoriesService,
+      listCategories as ListCategoriesService,
+      getCategory as GetCategoryService,
+      updateCategory as UpdateCategoryService,
+      deleteCategory as DeleteCategoryService,
+      syncCategoryChildren as SyncCategoryChildrenService,
     );
   });
 
-  it('creates a category through Prisma ORM and maps output fields', async () => {
-    category.findFirst.mockResolvedValueOnce(row).mockResolvedValueOnce(null);
-    category.create.mockResolvedValue(row);
+  it('delegates category creation to its command use case', async () => {
+    createCategory.execute.mockResolvedValue({ id: categoryId } as never);
 
     await expect(
       service.createCategory({
         name: 'Category',
-        parentId,
         isActive: true,
         visibleInMenu: true,
       }),
-    ).resolves.toEqual({
-      id,
+    ).resolves.toEqual({ id: categoryId });
+
+    expect(createCategory.execute).toHaveBeenCalledWith({
       name: 'Category',
-      slug: 'category',
       isActive: true,
       visibleInMenu: true,
-      parent: { id: parentId, name: 'Parent', slug: 'parent' },
-      hasAttributes: false,
-      parentId,
-      parentName: 'Parent',
-      description: 'text',
-      imageUrl: 'data:image/png;base64,category',
-      metaTitle: 'Meta title',
-      metaDescription: 'Meta description',
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
-    });
-
-    expect(category.create).toHaveBeenCalledWith({
-      data: {
-        name: 'Category',
-        slug: 'category',
-        parentId,
-        description: null,
-        imageUrl: null,
-        metaTitle: 'Category',
-        metaDescription: null,
-        isActive: true,
-        visibleInMenu: true,
-      },
-      include: {
-        parent: { select: { id: true, name: true, slug: true } },
-        attributes: {
-          where: { attribute: { deletedAt: null } },
-          select: { id: true },
-          take: 1,
-        },
-      },
     });
   });
 
-  it('rejects live duplicate slugs before create', async () => {
-    category.findFirst.mockResolvedValue({ id: 'other' });
+  it('delegates read and write category workflows to action use cases', async () => {
+    listCategories.execute.mockResolvedValue({ categories: [] } as never);
+    getCategory.execute.mockResolvedValue({ id: categoryId } as never);
+    updateCategory.execute.mockResolvedValue({ id: categoryId } as never);
+    deleteCategory.execute.mockResolvedValue({
+      category: { id: categoryId },
+    } as never);
 
-    await expect(
-      service.createCategory({
-        name: 'Category',
-        isActive: true,
-        visibleInMenu: true,
-      }),
-    ).rejects.toEqual(new ConflictException('slug already exists'));
+    await service.listCategories({ pageSize: 10 });
+    await service.getCategory(categoryId, 'children');
+    await service.updateCategory(categoryId, { name: 'Updated' });
+    await service.deleteCategory(categoryId);
+
+    expect(listCategories.execute).toHaveBeenCalledWith({ pageSize: 10 });
+    expect(getCategory.execute).toHaveBeenCalledWith({
+      id: categoryId,
+      include: 'children',
+    });
+    expect(updateCategory.execute).toHaveBeenCalledWith({
+      id: categoryId,
+      changes: { name: 'Updated' },
+    });
+    expect(deleteCategory.execute).toHaveBeenCalledWith({ id: categoryId });
   });
 
-  it('returns offset list data from findMany and count', async () => {
-    category.findMany.mockResolvedValue([
-      { ...row, attributes: [{ id: 'category-attribute-id' }] },
-    ]);
-    category.count.mockResolvedValue(1);
+  it('delegates batch and children sync workflows to command use cases', async () => {
+    createBatchCategories.execute.mockResolvedValue({
+      succeeded: [],
+      failed: [],
+      status: 'success',
+    } as never);
+    syncCategoryChildren.execute.mockResolvedValue({
+      status: 'success',
+      created: { succeeded: [], failed: [] },
+      updated: { succeeded: [], failed: [] },
+      deleted: { succeeded: [], failed: [] },
+    } as never);
 
-    await expect(
-      service.listCategories({ page: 1, pageSize: 10, query: 'Cat' }),
-    ).resolves.toMatchObject({
-      categories: [{ id, name: 'Category', hasAttributes: true }],
-      totalCount: 1,
-      totalPages: 1,
+    await service.createBatchCategories({ categories: [] });
+    await service.syncCategoryChildren({
+      id: categoryId,
+      newCategories: [],
+      updateCategories: [],
+      deleteCategories: [],
     });
 
-    expect(category.findMany).toHaveBeenCalledWith({
-      where: {
-        AND: [
-          { deletedAt: null },
-          {
-            OR: [
-              { name: { contains: 'Cat', mode: 'insensitive' } },
-              { slug: { contains: 'Cat', mode: 'insensitive' } },
-            ],
-          },
-        ],
-      },
-      include: {
-        parent: { select: { id: true, name: true, slug: true } },
-        attributes: {
-          where: { attribute: { deletedAt: null } },
-          select: { id: true },
-          take: 1,
-        },
-      },
-      orderBy: [{ name: 'asc' }, { id: 'asc' }],
-      take: 10,
-      skip: 0,
+    expect(createBatchCategories.execute).toHaveBeenCalledWith({
+      categories: [],
     });
-  });
-
-  it('returns cursor list data without a search query', async () => {
-    category.findMany.mockResolvedValue([row]);
-
-    await expect(
-      service.listCategories({ pageSize: 10, paginationType: 'cursor' }),
-    ).resolves.toMatchObject({
-      categories: [{ id, name: 'Category' }],
-    });
-
-    expect(category.findMany).toHaveBeenCalledWith({
-      where: {
-        AND: [{ deletedAt: null }],
-      },
-      include: {
-        parent: { select: { id: true, name: true, slug: true } },
-        attributes: {
-          where: { attribute: { deletedAt: null } },
-          select: { id: true },
-          take: 1,
-        },
-      },
-      orderBy: [{ name: 'asc' }, { id: 'asc' }],
-      take: 11,
-      skip: 0,
-    });
-  });
-
-  it('wraps deleted category results for the legacy delete contract', async () => {
-    category.findFirst.mockResolvedValueOnce(row).mockResolvedValueOnce(null);
-    category.update.mockResolvedValue({ ...row, deletedAt: new Date() });
-
-    await expect(service.deleteCategory(id)).resolves.toMatchObject({
-      category: {
-        id,
-        name: 'Category',
-      },
-    });
-
-    expect(category.update).toHaveBeenCalledWith({
-      where: { id },
-      data: {
-        deletedAt: expect.any(Date),
-        isActive: false,
-      },
-      include: {
-        parent: { select: { id: true, name: true, slug: true } },
-        attributes: {
-          where: { attribute: { deletedAt: null } },
-          select: { id: true },
-          take: 1,
-        },
-      },
-    });
-  });
-
-  it('rejects deleting categories with children', async () => {
-    category.findFirst
-      .mockResolvedValueOnce(row)
-      .mockResolvedValueOnce({ id: 'child' });
-
-    await expect(service.deleteCategory(id)).rejects.toEqual(
-      new BadRequestException('category has children'),
-    );
-    expect(category.update).not.toHaveBeenCalled();
-  });
-
-  it('returns grouped sync results for create, update, and delete operations', async () => {
-    category.findFirst
-      .mockResolvedValueOnce(row)
-      .mockResolvedValueOnce(row)
-      .mockResolvedValueOnce({ id: 'duplicate' });
-
-    await expect(
-      service.syncCategoryChildren({
-        id,
-        newCategories: [
-          {
-            key: '92c48467-76aa-4788-8aaf-1dbf2d9be8e1',
-            name: 'Category',
-            isActive: true,
-            visibleInMenu: true,
-          },
-        ],
-        updateCategories: [],
-        deleteCategories: [],
-      }),
-    ).resolves.toEqual({
-      status: 'failed',
-      created: {
-        succeeded: [],
-        failed: [
-          {
-            key: '92c48467-76aa-4788-8aaf-1dbf2d9be8e1',
-            reason: 'slug already exists',
-          },
-        ],
-      },
-      updated: {
-        succeeded: [],
-        failed: [],
-      },
-      deleted: {
-        succeeded: [],
-        failed: [],
-      },
+    expect(syncCategoryChildren.execute).toHaveBeenCalledWith({
+      id: categoryId,
+      newCategories: [],
+      updateCategories: [],
+      deleteCategories: [],
     });
   });
 });

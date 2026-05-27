@@ -1,8 +1,8 @@
 import {
   CategoryDto,
   CategoryWithChildrenDto,
-  CategorySummaryDto,
 } from '@org/contracts';
+import type { CategorySummaryDto } from '@org/contracts';
 
 export interface CategoryRow {
   id: string;
@@ -71,3 +71,5 @@ export function toCategoryWithChildrenDto(
     children: node.children.map(toCategoryWithChildrenDto),
   };
 }
+
+

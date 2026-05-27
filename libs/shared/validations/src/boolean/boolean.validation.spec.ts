@@ -3,7 +3,7 @@ import {
   optionalBoolean,
   optionalNullableBoolean,
   requireBoolean,
-} from './boolean.validation';
+} from './boolean.validation.js';
 
 describe('boolean validations', () => {
   it('records an issue when a required boolean is missing or invalid', () => {

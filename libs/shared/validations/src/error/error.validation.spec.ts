@@ -1,4 +1,4 @@
-import { throwIfInvalid } from './error.validation';
+import { throwIfInvalid } from './error.validation.js';
 import { vi } from 'vitest';
 
 describe('error validations', () => {

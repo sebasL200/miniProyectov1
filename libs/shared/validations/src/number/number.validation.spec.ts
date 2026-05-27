@@ -2,7 +2,7 @@ import {
   optionalNumber,
   optionalPositiveInt,
   requireNumber,
-} from './number.validation';
+} from './number.validation.js';
 
 describe('number validations', () => {
   it('records issues for required and optional numbers', () => {

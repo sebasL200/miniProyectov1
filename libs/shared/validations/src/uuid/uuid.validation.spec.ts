@@ -1,4 +1,4 @@
-import { isUuid, optionalUuid, requireUuid } from './uuid.validation';
+import { isUuid, optionalUuid, requireUuid } from './uuid.validation.js';
 
 describe('uuid validations', () => {
   it('accepts valid UUID strings', () => {

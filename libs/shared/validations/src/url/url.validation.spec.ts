@@ -1,4 +1,4 @@
-import { isValidUrl, optionalUrlOrEmpty } from './url.validation';
+import { isValidUrl, optionalUrlOrEmpty } from './url.validation.js';
 
 describe('url validations', () => {
   it('accepts absolute URLs', () => {

@@ -38,3 +38,15 @@ export function legacyCoerceBoolean(value: unknown): boolean | undefined {
   }
   return Boolean(value);
 }
+
+export function optionalQueryBoolean(
+  value: unknown,
+  field: string,
+  issues: string[],
+): boolean | undefined {
+  if (value === undefined || value === '') return undefined;
+  if (value === 'true' || value === true) return true;
+  if (value === 'false' || value === false) return false;
+  issues.push(`${field} must be a boolean`);
+  return undefined;
+}

@@ -2,14 +2,15 @@ import { BadRequestException } from '@nestjs/common';
 import {
   CreateBatchCategoryDto,
   CreateCategoryDto,
-  ListCategoriesQueryDto,
-  SyncCategoryChildrenDto,
-  UpdateCategoryDto,
 } from '@org/contracts';
+import { ListCategoriesQueryDto } from '@org/contracts';
+import { SyncCategoryChildrenDto } from '@org/contracts';
+import { UpdateCategoryDto } from '@org/contracts';
 import {
   legacyCoerceBoolean,
   objectValue,
   optionalBoolean,
+  optionalQueryBoolean,
   optionalPositiveInt,
   optionalString,
   optionalStringValue,
@@ -112,9 +113,23 @@ export function validateListCategoriesQuery(
     issues.push('paginationType must be offset or cursor');
   }
 
-  const after = optionalStringValue(query.after);
-  const before = optionalStringValue(query.before);
-  const searchQuery = optionalTrimmedStringValue(query.query);
+  const after = optionalStringValue(query.after, 'after', issues);
+  const before = optionalStringValue(query.before, 'before', issues);
+  const searchQuery = optionalTrimmedStringValue(query.query, 'query', issues);
+  const isActive = optionalQueryBoolean(query.isActive, 'isActive', issues);
+  const order = optionalStringValue(query.order, 'order', issues) as
+    | ListCategoriesQueryDto['order']
+    | undefined;
+
+  if (
+    order !== undefined &&
+    order !== 'createdAt' &&
+    order !== '-createdAt' &&
+    order !== 'updatedAt' &&
+    order !== '-updatedAt'
+  ) {
+    issues.push('order must be createdAt, -createdAt, updatedAt or -updatedAt');
+  }
 
   if (after && before) {
     issues.push('Use only one cursor position at a time');
@@ -132,10 +147,12 @@ export function validateListCategoriesQuery(
 
   throwInvalid(issues);
   return {
-    parentId: optionalStringValue(query.parentId),
+    parentId: optionalStringValue(query.parentId, 'parentId', issues),
     pageSize,
     page,
     rootOnly: legacyCoerceBoolean(query.rootOnly) ?? false,
+    isActive,
+    order,
     query: searchQuery,
     paginationType: paginationType as 'offset' | 'cursor' | undefined,
     after,
@@ -238,3 +255,5 @@ function throwInvalid(issues: string[]) {
     throw new BadRequestException('Invalid input');
   });
 }
+
+

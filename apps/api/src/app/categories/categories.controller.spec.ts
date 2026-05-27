@@ -70,6 +70,7 @@ describe('CategoriesController', () => {
       pageSize: '10',
       page: '1',
       query: 'Cat',
+      isActive: 'true',
     } as never);
 
     expect(categoriesService.listCategories).toHaveBeenCalledWith({
@@ -77,6 +78,8 @@ describe('CategoriesController', () => {
       pageSize: 10,
       page: 1,
       rootOnly: false,
+      isActive: true,
+      order: undefined,
       query: 'Cat',
       paginationType: undefined,
       after: undefined,
@@ -105,6 +108,8 @@ describe('CategoriesController', () => {
       pageSize: 10,
       page: undefined,
       rootOnly: false,
+      isActive: undefined,
+      order: undefined,
       query: undefined,
       paginationType: 'cursor',
       after: undefined,
@@ -130,8 +135,37 @@ describe('CategoriesController', () => {
     expect(categoriesService.listCategories).toHaveBeenCalledWith(
       expect.objectContaining({
         paginationType: 'cursor',
+        isActive: undefined,
+        order: undefined,
       }),
     );
+  });
+
+  it('passes normalized order query values to the service', async () => {
+    categoriesService.listCategories.mockResolvedValue({
+      categories: [category],
+      totalCount: 1,
+      totalPages: 1,
+    });
+
+    await controller.listCategories({
+      pageSize: '10',
+      order: '-createdAt',
+    } as never);
+
+    expect(categoriesService.listCategories).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: '-createdAt',
+      }),
+    );
+  });
+
+  it('rejects invalid order query values', async () => {
+    await expect(
+      controller.listCategories({
+        order: 'name',
+      } as never),
+    ).rejects.toThrow('Invalid input');
   });
 
   it('allows cursor tokens without a search query', async () => {
@@ -151,6 +185,8 @@ describe('CategoriesController', () => {
       pageSize: 10,
       page: undefined,
       rootOnly: false,
+      isActive: undefined,
+      order: undefined,
       query: undefined,
       paginationType: 'cursor',
       after: 'anchor-cursor-token',
@@ -217,6 +253,26 @@ describe('CategoriesController', () => {
     expect(result).toEqual({
       ...category,
       children: [],
+    });
+  });
+
+  it('returns raw update data', async () => {
+    categoriesService.updateCategory.mockResolvedValue({
+      ...category,
+      name: 'Updated Category',
+    });
+
+    const result = await controller.updateCategory(
+      { id: category.id },
+      { name: 'Updated Category' },
+    );
+
+    expect(categoriesService.updateCategory).toHaveBeenCalledWith(category.id, {
+      name: 'Updated Category',
+    });
+    expect(result).toEqual({
+      ...category,
+      name: 'Updated Category',
     });
   });
 

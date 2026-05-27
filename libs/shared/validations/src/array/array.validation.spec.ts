@@ -1,7 +1,7 @@
 import {
   optionalStringArray,
   requireStringArray,
-} from './array.validation';
+} from './array.validation.js';
 
 describe('array validations', () => {
   it('validates optional and required string arrays', () => {
