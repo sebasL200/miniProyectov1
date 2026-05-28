@@ -56,6 +56,9 @@ importers:
       axios:
         specifier: ^1.6.0
         version: 1.15.0
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14

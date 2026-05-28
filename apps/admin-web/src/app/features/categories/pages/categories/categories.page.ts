@@ -61,11 +61,11 @@ export class CategoriesPage implements OnInit {
 
     private loadPageComposite(): void {
         this.isLoadingComposite.set(true);
-        this.service.getCompositeCategoriesPage().subscribe({
+        this.service.fetchCategoriesPage().subscribe({
             next: (response) => {
-                this.totalCategories.set(response.data.table.totalCount);
-                this.totalPages.set(response.data.table.totalPages);
-                this.categories.set(response.data.table.categories);
+                this.totalCategories.set(response.data.totalCount);
+                this.totalPages.set(response.data.totalPages);
+                this.categories.set(response.data.categories);
                 this.registerTableEventHandlers();
                 this.isLoadingComposite.set(false);
             },
@@ -170,7 +170,18 @@ export class CategoriesPage implements OnInit {
     }
 
     private handleEditCategory(categoryId: string): void {
-        this.router.navigate([`catalogos/categorias/${categoryId}/edit`]);
+        this.dialogService
+            .open(RegisterCategoryDialog, categoryId, {
+                title: 'Editar Categoría',
+                width: DIMENSIONS.MODAL.WIDTH,
+                height: DIMENSIONS.MODAL.HEIGHT,
+            })
+            .onClose$.subscribe((result) => {
+                if (result) {
+                    this.fetchCategories();
+                    this.toastService.showSuccess('Categoría actualizada correctamente.');
+                }
+            });
     }
 
     private handleDeleteCategory(categoryId: string): void {

@@ -14,11 +14,6 @@ export const categoriesRoutes: Routes = [
             ),
     },
     {
-        path: ':id/edit',
-        loadComponent: () =>
-            import('./pages/edit-category/edit-category.page').then((m) => m.EditCategoryPage),
-    },
-    {
         path: ':id/subcategories',
         loadComponent: () =>
             import('./pages/subcategories/subcategories.page').then((m) => m.SubcategoriesPage),

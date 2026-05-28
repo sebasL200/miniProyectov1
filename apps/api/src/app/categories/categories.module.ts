@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationService } from '../common/pagination/pagination.service';
 import { CategoriesController } from './categories.controller';
+import { CompositeCategoriesController } from './composite-categories.controller';
 import { CategoriesService } from './categories.service';
 import { CreateBatchCategoriesService } from './use-cases/commands/create-batch-categories/create-batch-categories.service';
 import { CreateCategoryService } from './use-cases/commands/create-category/create-category.service';
@@ -12,7 +13,7 @@ import { GetCategoryService } from './use-cases/queries/get-category/get-categor
 import { ListCategoriesService } from './use-cases/queries/list-categories/list-categories.service';
 
 @Module({
-  controllers: [CategoriesController],
+  controllers: [CategoriesController, CompositeCategoriesController],
   providers: [
     CategoriesService,
     CreateCategoryService,
