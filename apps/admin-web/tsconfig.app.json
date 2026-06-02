@@ -3,8 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "declarationMap": false,
-    "types": [],
-    "rootDir": "."
+    "types": []
   },
   "include": ["src/**/*.ts"],
   "exclude": [
@@ -13,5 +12,10 @@
     "jest.config.ts",
     "jest.config.cts",
     "src/test-setup.ts"
+  ],
+  "references": [
+    {
+      "path": "../../libs/shared/contracts/tsconfig.lib.json"
+    }
   ]
 }

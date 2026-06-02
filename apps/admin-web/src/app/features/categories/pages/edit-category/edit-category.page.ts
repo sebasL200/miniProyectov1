@@ -1,15 +1,17 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
-import { PageLayout, PageHeader, Card } from '@shared/components';
-import { CategoryForm } from '@categories/components/forms/category-form/category-form';
-import { CategoryService } from '@categories/services/category/category.service';
-import { Category } from '@shared/models';
-import { CategoryFormData } from '@categories/components/forms/category-form/types';
-import { FormEvent } from '@shared/interfaces';
-import { UpdateCategory } from '@categories/services/category-actions/types';
-import { CategoryActionsService } from '@categories/services/category-actions/category-actions.service';
-import { ToastService } from '@shared/services/toast/toast.service';
+import { PageLayout } from '../../../../shared/components/page-layout/page-layout';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { Card } from '../../../../shared/components/ui/card/card';
+import { CategoryForm } from '../../components/forms/category-form/category-form';
+import { CategoryService } from '../../services/category/category.service';
+import { Category } from '../../../../shared/models/category.model';
+import { CategoryFormData } from '../../components/forms/category-form/types';
+import { FormEvent } from '../../../../shared/interfaces/form.interface';
+import { UpdateCategory } from '../../services/category-actions/types';
+import { CategoryActionsService } from '../../services/category-actions/category-actions.service';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { Location } from '@angular/common';
-import { DialogService } from '@shared/services/dialog/dialog.service';
+import { DialogService } from '../../../../shared/services/dialog/dialog.service';
 
 @Component({
     selector: 'ecom-edit-category.page',

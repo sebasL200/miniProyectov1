@@ -1,9 +1,4 @@
-import {
-  DraftRecord,
-  EntityData,
-  EntityRecord,
-  PersistedRecord,
-} from '@shared/interfaces';
+import { DraftRecord, EntityData, EntityRecord, PersistedRecord } from '../interfaces/entity-record.interface';
 
 /**
  * Crea un registro local (draft) con una clave única generada automáticamente.

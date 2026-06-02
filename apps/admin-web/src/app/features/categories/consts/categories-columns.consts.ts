@@ -1,4 +1,4 @@
-import { DataGridColumn } from '@shared/components/ui/data-grid/data-grid.types';
+import { DataGridColumn } from '../../../shared/components/ui/data-grid/data-grid.types';
 
 export const NAME_COLUMN: DataGridColumn = {
     field: 'name',

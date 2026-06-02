@@ -1,0 +1,59 @@
+<form class="space-y-6" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <ecom-form-divider label="Información General" />
+    <div class="grid grid-cols-1 gap-4">
+        <ecom-label for="brand-name" label="Nombre">
+            <ecom-input-text inputId="brand-name" formControlName="name" placeholder="Ej: Nike" [required]="true"></ecom-input-text>
+            <ecom-form-error-message [control]="formGroup.controls.name" [messages]="{ required: 'El nombre es obligatorio', minlength: 'El nombre debe tener al menos 3 caracteres', maxlength: 'El nombre no puede exceder 100 caracteres' }"></ecom-form-error-message>
+        </ecom-label>
+
+        <ecom-label for="brand-logo" label="Logo">
+            <ecom-input-image-upload
+                inputId="brand-logo"
+                formControlName="logoUrl"
+                accept="image/png,image/jpeg,image/svg+xml"
+                [config]="imageUploadConfig"
+                title="Subir logo"
+            />
+            <ecom-form-error-message
+                [control]="formGroup.controls.logoUrl"
+                [messages]="{
+                    required: 'El logo es obligatorio',
+                    maxlength: 'El logo excede el tamaño permitido.'
+                }"
+            />
+        </ecom-label>
+
+        <ecom-label for="brand-description" label="Descripción">
+            <ecom-input-textarea inputId="brand-description" formControlName="description" placeholder="Descripción de la marca..." resize="none" [required]="true"></ecom-input-textarea>
+            <ecom-form-error-message [control]="formGroup.controls.description" [messages]="{ required: 'La descripción es obligatoria', minlength: 'La descripción debe tener al menos 10 caracteres' }"></ecom-form-error-message>
+        </ecom-label>
+    </div>
+    <ecom-form-divider label="Información técnica" />
+    <div class="grid grid-cols-1 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ecom-label for="brand-meta-title" label="Título Meta">
+                <ecom-input-text inputId="brand-meta-title" formControlName="metaTitle" placeholder="Título para buscadores" [required]="true"></ecom-input-text>
+                <ecom-form-error-message [control]="formGroup.controls.metaTitle" [messages]="{ required: 'El título meta es obligatorio', minlength: 'El título meta debe tener al menos 5 caracteres' }"></ecom-form-error-message>
+            </ecom-label>
+            <ecom-label for="brand-website" label="Sitio Web">
+                <ecom-input-text inputId="brand-website" formControlName="website" placeholder="https://ejemplo.com"></ecom-input-text>
+                <ecom-form-error-message [control]="formGroup.controls.website" [messages]="{ required: 'La URL del sitio web es obligatoria', invalidUrl: 'La URL del sitio web no es válida' }"></ecom-form-error-message>
+            </ecom-label>
+        </div>
+        <ecom-label for="brand-meta-description" label="Descripción Meta">
+            <ecom-input-textarea inputId="brand-meta-description" formControlName="metaDescription" placeholder="Descripción para buscadores..." resize="none" [required]="true"></ecom-input-textarea>
+            <ecom-form-error-message [control]="formGroup.controls.metaDescription" [messages]="{ required: 'La descripción meta es obligatoria', minlength: 'La descripción meta debe tener al menos 10 caracteres', maxlength: 'La descripción meta no puede exceder 160 caracteres' }"></ecom-form-error-message>
+        </ecom-label>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <ecom-label label="Visibilidad en el Menú">
+            <p class="text-gray-500 text-xs mb-2">(Sí/No indica si se mostrará en el menú principal del sitio)</p>
+            <ecom-switch formControlName="visibleInMenu"></ecom-switch>
+        </ecom-label>
+        <ecom-label label="Estatus">
+            <p class="text-gray-500 text-xs mb-2">(Activo/Inactivo)</p>
+            <ecom-switch formControlName="isActive"></ecom-switch>
+        </ecom-label>
+    </div>
+    <ecom-form-actions class="flex items-center gap-2 justify-end" [actions]="actions()" [disableSubmit]="!canSubmit()" />
+</form>

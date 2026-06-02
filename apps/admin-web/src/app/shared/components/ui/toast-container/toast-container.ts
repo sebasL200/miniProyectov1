@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
-import { Z_INDEX } from '@shared/constants/z-index.const';
+import { Z_INDEX } from '../../../constants/z-index.const';
 import { Toast } from './components/toast/toast';
-import { ToastService } from '@shared/services/toast/toast.service';
+import { ToastService } from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'ecom-toast-container',

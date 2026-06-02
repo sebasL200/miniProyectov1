@@ -1,5 +1,5 @@
-import { EntityData, EntityRecord } from "@shared/interfaces";
-import { Category } from "@shared/models";
+import { EntityData, EntityRecord } from '../../../../shared/interfaces/entity-record.interface';
+import { Category } from '../../../../shared/models/category.model';
 
 export type CategoryRecord<TDraft extends EntityData = EntityData> = EntityRecord<
     TDraft,

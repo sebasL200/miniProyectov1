@@ -1,5 +1,5 @@
 import { Component, viewChildren } from '@angular/core';
-import { Slot } from '@shared/directives/slot/slot';
+import { Slot } from '../../../directives/slot/slot';
 
 @Component({
   selector: 'ecom-card',

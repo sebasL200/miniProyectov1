@@ -1,0 +1,82 @@
+<ecom-card>
+  @if (titleCard()) {
+  <div slot="header" class="font-bold text-xl">{{ titleCard() }}</div>
+  }
+  <ecom-data-grid
+    [data]="rows()"
+    [columns]="columns()"
+    [rowsLimit]="pagination().size"
+  >
+    <ng-template ecom-cell-template template="name" let-row let-column="column">
+      <ecom-tooltip [content]="row.name">
+        <div slot="trigger" class="text-black truncate">{{ row.name }}</div>
+      </ecom-tooltip>
+    </ng-template>
+    <ng-template
+      ecom-cell-template
+      template="modelYear"
+      let-row
+      let-column="column"
+    >
+      <ecom-tooltip [content]="row.modelYear">
+        <div slot="trigger" class="text-black truncate">
+          {{ row.modelYear }}
+        </div>
+      </ecom-tooltip>
+    </ng-template>
+    <ng-template
+      ecom-cell-template
+      template="actions"
+      let-row
+      let-column="column"
+    >
+      <ecom-product-table-actions
+        [options]="actionsOptions()"
+        (addOffer)="onAddOffer(row)"
+        (edit)="onEdit(row)"
+        (delete)="onDelete(row)"
+        (view)="onView(row)"
+      ></ecom-product-table-actions>
+    </ng-template>
+    <ng-template
+      ecom-cell-template
+      template="basePrice"
+      let-row
+      let-column="column"
+    >
+      <span>{{ row.basePrice | currency: 'MXN' : 'es-MX' }}</span>
+    </ng-template>
+    <ng-template
+      ecom-cell-template
+      template="featured"
+      let-row
+      let-column="column"
+    >
+      <ecom-switch
+        variant="secondary"
+        [(checked)]="row.isFeatured"
+        (checkedChange)="toggleFeatured(row, $event)"
+      />
+    </ng-template>
+    <ng-template
+      ecom-cell-template
+      template="active"
+      let-row
+      let-column="column"
+    >
+      <ecom-switch
+        variant="secondary"
+        [(checked)]="row.isActive"
+        (checkedChange)="toggleStatus(row, $event)"
+      />
+    </ng-template>
+  </ecom-data-grid>
+  @if (pagination().showPagination) {
+  <ecom-pagination-footer
+    class="mt-5"
+    [currentPage]="pagination().page"
+    [pages]="pagination().pages"
+    (pageChange)="onPageChange($event)"
+  />
+  }
+</ecom-card>

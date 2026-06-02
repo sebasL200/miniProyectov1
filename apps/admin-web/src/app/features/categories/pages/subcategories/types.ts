@@ -1,8 +1,9 @@
-import { CategoryFormData } from '@categories/components/forms/category-form/types';
-import { UpdateCategory } from '@categories/services/category-actions/types';
-import { SaveCategoryRequest } from '@categories/services/category/types';
-import { ApiResponse, BatchStatus, DraftRecord, EntityData, PersistedRecord } from '@shared/interfaces';
-import { Category } from '@shared/models';
+import { CategoryFormData } from '../../components/forms/category-form/types';
+import { UpdateCategory } from '../../services/category-actions/types';
+import { SaveCategoryRequest } from '../../services/category/types';
+import { ApiResponse, BatchStatus } from '../../../../shared/interfaces/api.interface';
+import { DraftRecord, EntityData, PersistedRecord } from '../../../../shared/interfaces/entity-record.interface';
+import { Category } from '../../../../shared/models/category.model';
 
 export type SubcategoryPersistedRecord = PersistedRecord<Category & EntityData>;
 export type SubcategoryDraftRecord = DraftRecord<CategoryFormData & EntityData>;

@@ -9,13 +9,10 @@ import {
     SyncDeletedItem,
     SyncUpdatedItem,
 } from '../types';
-import { EntityData } from '@shared/interfaces';
-import {
-    draftToPersistedRecord,
-    toDraftRecord,
-} from '@shared/mappers/entity-record.mapper';
-import { CategoryFormData } from '@categories/components/forms/category-form/types';
-import { CategoryRecord } from '@categories/components/categories-table/types';
+import { EntityData } from '../../../../../shared/interfaces/entity-record.interface';
+import { draftToPersistedRecord, toDraftRecord } from '../../../../../shared/mappers/entity-record.mapper';
+import { CategoryFormData } from '../../../components/forms/category-form/types';
+import { CategoryRecord } from '../../../components/categories-table/types';
 
 @Injectable()
 export class SubcategoriesStateService {

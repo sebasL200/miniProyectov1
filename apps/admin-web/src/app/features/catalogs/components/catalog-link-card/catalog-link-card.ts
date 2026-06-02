@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Card } from "@shared/components";
+import { Card } from '../../../../shared/components/ui/card/card';
 import { RouterLink } from "@angular/router";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { IconProp } from '@fortawesome/fontawesome-svg-core';

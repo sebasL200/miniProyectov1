@@ -6,13 +6,13 @@ import {
   signal,
   Type,
 } from '@angular/core';
-import { ConfirmDialog } from '@shared/components/ui/confirm-dialog/confirm-dialog';
-import { ConfirmDialogData } from '@shared/components/ui/confirm-dialog/confirm-dialog.types';
-import { Dialog } from '@shared/components/ui/dialog/dialog';
-import { IDialogComponent } from '@shared/components/ui/dialog/interfaces/dialog-component.interface';
-import { DialogConfig } from '@shared/components/ui/dialog/models/dialog-config.model';
-import { DialogRef } from '@shared/components/ui/dialog/models/dialog-ref.model';
-import { Z_INDEX } from '@shared/constants/z-index.const';
+import { ConfirmDialog } from '../../components/ui/confirm-dialog/confirm-dialog';
+import { ConfirmDialogData } from '../../components/ui/confirm-dialog/confirm-dialog.types';
+import { Dialog } from '../../components/ui/dialog/dialog';
+import { IDialogComponent } from '../../components/ui/dialog/interfaces/dialog-component.interface';
+import { DialogConfig } from '../../components/ui/dialog/models/dialog-config.model';
+import { DialogRef } from '../../components/ui/dialog/models/dialog-ref.model';
+import { Z_INDEX } from '../../constants/z-index.const';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +35,7 @@ export class DialogService {
       elementInjector: this.injector,
     });
     ref.instance.child.set(component);
-    let zIndex = config?.zIndex || Z_INDEX.MODAL + this.dialogs().length;
+    const zIndex = config?.zIndex || Z_INDEX.MODAL + this.dialogs().length;
     const dialogConfig: DialogConfig = new DialogConfig({ ...config, zIndex });
     ref.instance.dialogConfig.set(dialogConfig);
     const dialogRef = new DialogRef<T, R>(data);

@@ -11,7 +11,7 @@ import {
   QueryList,
   signal,
 } from '@angular/core';
-import { Slot } from '@shared/directives/slot/slot';
+import { Slot } from '../../../directives/slot/slot';
 import {
   buildTooltipArrowClasses,
   buildTooltipContentClasses,

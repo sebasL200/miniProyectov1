@@ -1,12 +1,12 @@
-import { duration } from "@shared/constants/transitions";
+import { duration } from '../../../../constants/transitions';
 import { ToastPosition, ToastType } from "../components/toast/toast.types";
-import { Z_INDEX } from "@shared/constants/z-index.const";
+import { Z_INDEX } from '../../../../constants/z-index.const';
 
 export class ToastConfig {
   position: ToastPosition = 'top-right';
   duration: number = duration.normal;
-  title: string = '';
-  message: string = '';
+  title = '';
+  message = '';
   zIndex: number = Z_INDEX.TOAST;
   type: ToastType = 'info';
 

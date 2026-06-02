@@ -1,0 +1,33 @@
+<ecom-card>
+    <ecom-data-grid [columns]="columns()" [data]="rows()" [rowsLimit]="pagination().size">
+        <ng-template ecom-cell-template template="logo" let-row let-column="column">
+            <div class="flex justify-center items-center">
+                <ecom-image size="xl" [src]="logoUrl(row)" [alt]="row.name + ' Logo'">
+                    <div slot="error">
+                        <span class="text-xs text-neutral-500">Error al Cargar la Imagen</span>
+                    </div>
+                </ecom-image>
+            </div>
+        </ng-template>
+        <ng-template ecom-cell-template template="visible_in_menu" let-row>
+            <ecom-switch [(checked)]="row.visibleInMenu" (checkedChange)="toggleVisibleInMenu(row, $event)"></ecom-switch>
+        </ng-template>
+        <ng-template ecom-cell-template template="status" let-row>
+            <ecom-switch [(checked)]="row.isActive" (checkedChange)="toggleBrandStatus(row, $event)"></ecom-switch>
+        </ng-template>
+        <ng-template ecom-cell-template template="website" let-row let-column="column">
+            <ecom-button variant="link" [href]="row.website ?? row.website" target="_blank">
+                {{ row.website }}
+            </ecom-button>
+        </ng-template>
+        <ng-template ecom-cell-template template="actions" let-row let-column="column">
+            <ecom-brand-table-actions [options]="actions()" (delete)="onDeleteBrand(row)" (view)="onViewBrand(row)" (edit)="onEditBrand(row)" />
+        </ng-template>
+        <ng-template ecom-cell-template template="description" let-row let-column="column">
+            <ecom-truncate-text [text]="row.description" />
+        </ng-template>
+    </ecom-data-grid>
+    @if (pagination().showPagination) {
+        <ecom-pagination-footer class="mt-5" [currentPage]="pagination().page" [pages]="pagination().pages" (pageChange)="onPageChange($event)" />
+    }
+</ecom-card>

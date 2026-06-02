@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { SideItemType } from '@shared/components';
+import { SideItemType } from '../../components/sidebar/components/side-item/side-item.types';
 
 @Injectable({
   providedIn: 'root',

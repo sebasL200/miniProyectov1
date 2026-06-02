@@ -1,0 +1,11 @@
+<ecom-page-layout>
+    <header ecom-page-header title="Marcas" description="Administra las distintas marcas para tus productos"></header>
+    <article class="mb-5">
+        <section>
+            <ecom-brand-overview-actions [totalCount]="totalBrands()" (creationRequest)="onBrandCreationRequest($event)"/>
+        </section>
+    </article>
+    <main>
+        <ecom-brands-table [pagination]="pagination()" [data]="rows()" />
+    </main>
+</ecom-page-layout>

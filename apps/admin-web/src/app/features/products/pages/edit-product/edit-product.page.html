@@ -1,0 +1,18 @@
+<ecom-page-layout [loading]="isLoading()">
+    <header ecom-page-header title="Editar Producto" description="Modifica cualquier propiedad disponible del producto"></header>
+    <main>
+        <ecom-card>
+            @if (!isLoading()) {
+                <ecom-product-form
+                    [initialData]="productFormData()"
+                    [categoriesOptions]="categoriesOptions()"
+                    [brandsOptions]="brandsOptions()"
+                    [attributesOptions]="attributesOptions()"
+                    [categoryDrivenAttributes]="categoryDrivenAttributes()"
+                    (submitted)="onSubmit($event)"
+                    (canceled)="onCanceled($event)"
+                />
+            }
+        </ecom-card>
+    </main>
+</ecom-page-layout>

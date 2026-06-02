@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
-import { buildFormValueControlProvider } from '@shared/utils/form-value-control-provider.builder';
+import { buildFormValueControlProvider } from '../../../utils/form-value-control-provider.builder';
 import { ToolbarButton } from './components/toolbar-button/toolbar-button';
 import {
   buildInputRichTextareaClasses,

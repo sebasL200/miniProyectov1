@@ -30,7 +30,7 @@ import {
   INPUT_SELECT_SEARCH_WRAPPER_CLASSES,
 } from './input-select.styles';
 import { InputSelectDirection, InputSelectOption, InputSelectSize } from './input-select.types';
-import { buildFormValueControlProvider } from '@shared/utils/form-value-control-provider.builder';
+import { buildFormValueControlProvider } from '../../../utils/form-value-control-provider.builder';
 import { DEFAULT_OPTION } from './input-select.consts';
 import { SelectOption } from './directives/select-option';
 import { NgTemplateOutlet } from '@angular/common';
@@ -60,7 +60,7 @@ export class InputSelect
   readonly classNameOptionsList = input('');
   readonly options = input<InputSelectOption[]>([]);
   readonly showDefaultOption = input(false, { transform: booleanAttribute });
-  readonly invalid = input(false, { alias: 'invalid', transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
   readonly readonly = input(false, { alias: 'readOnly', transform: booleanAttribute });
   readonly size = input<InputSelectSize>('md');
   readonly searchable = input(false, { transform: booleanAttribute });

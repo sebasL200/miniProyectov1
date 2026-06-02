@@ -1,0 +1,120 @@
+<ecom-page-layout class="flex flex-col justify-between" [loading]="isLoading()">
+    @if (!isLoading() && product(); as product) {
+        <main class="flex flex-col gap-4 overflow-y-auto">
+            <section class="flex flex-wrap items-center gap-3">
+                <ecom-badge size="xl">{{ activeLabel() }}</ecom-badge>
+                <ecom-badge variant="secondary" size="xl">{{ featuredLabel() }}</ecom-badge>
+            </section>
+
+            <section class="flex flex-col gap-3">
+                <ecom-form-divider label="Información general" />
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <ecom-label label="Nombre">
+                        <ecom-input-text [value]="product.name" [readonly]="true" />
+                    </ecom-label>
+                    <ecom-label label="Slug">
+                        <ecom-input-text [value]="product.slug" [readonly]="true" />
+                    </ecom-label>
+                    <ecom-label label="Marca">
+                        <ecom-input-text [value]="brandName()" [readonly]="true" placeholder="Sin marca" />
+                    </ecom-label>
+                    <ecom-label label="Año modelo">
+                        <ecom-input-text [value]="product.modelYear.toString()" [readonly]="true" />
+                    </ecom-label>
+                    <ecom-label label="Precio base">
+                        <ecom-input-text [value]="basePrice()" [readonly]="true" />
+                    </ecom-label>
+                </div>
+            </section>
+
+            <section class="flex flex-col gap-3">
+                <ecom-form-divider label="Descripción" />
+                <ecom-label label="Descripción corta">
+                    <ecom-input-textarea
+                        [value]="product.descriptionShort ?? ''"
+                        [readonly]="true"
+                        resize="none"
+                        placeholder="Sin descripción corta"
+                    />
+                </ecom-label>
+                <ecom-label label="Descripción HTML">
+                    <ecom-html-viewer
+                        [value]="product.descriptionHtml"
+                        placeholder="Sin descripción"
+                    />
+                </ecom-label>
+            </section>
+
+            <section class="flex flex-col gap-3">
+                <ecom-form-divider label="Clasificación" />
+                <ecom-label label="Categorías">
+                    <div class="flex flex-wrap items-center gap-2">
+                        @for (category of product.categories; track category.id) {
+                            <ecom-badge variant="secondary">{{ category.name }}</ecom-badge>
+                        } @empty {
+                            <span class="text-sm text-gray-500">Sin categorías</span>
+                        }
+                    </div>
+                </ecom-label>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <ecom-label label="Atributos efectivos">
+                        <div class="flex flex-wrap items-center gap-2">
+                            @for (attribute of product.attributes; track attribute.id) {
+                                <ecom-badge>{{ attribute.name }}</ecom-badge>
+                            } @empty {
+                                <span class="text-sm text-gray-500">Sin atributos</span>
+                            }
+                        </div>
+                    </ecom-label>
+                    <ecom-label label="Atributos directos">
+                        <div class="flex flex-wrap items-center gap-2">
+                            @for (attribute of product.directAttributes; track attribute.id) {
+                                <ecom-badge variant="secondary">{{ attribute.name }}</ecom-badge>
+                            } @empty {
+                                <span class="text-sm text-gray-500">Sin atributos directos</span>
+                            }
+                        </div>
+                    </ecom-label>
+                </div>
+            </section>
+
+            <section class="flex flex-col gap-3">
+                <ecom-form-divider label="Dimensiones" />
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <ecom-label label="Ancho">
+                        <ecom-input-text
+                            [value]="product.dimensionsBase.width"
+                            [readonly]="true"
+                            placeholder="Sin ancho"
+                        />
+                    </ecom-label>
+                    <ecom-label label="Alto">
+                        <ecom-input-text
+                            [value]="product.dimensionsBase.height"
+                            [readonly]="true"
+                            placeholder="Sin alto"
+                        />
+                    </ecom-label>
+                    <ecom-label label="Largo">
+                        <ecom-input-text
+                            [value]="product.dimensionsBase.length"
+                            [readonly]="true"
+                            placeholder="Sin largo"
+                        />
+                    </ecom-label>
+                    <ecom-label label="Peso">
+                        <ecom-input-text
+                            [value]="product.dimensionsBase.weight"
+                            [readonly]="true"
+                            placeholder="Sin peso"
+                        />
+                    </ecom-label>
+                </div>
+            </section>
+        </main>
+    }
+
+    <footer class="flex items-center justify-end pt-4">
+        <ecom-button variant="outline" (click)="closeDialog()">Cerrar</ecom-button>
+    </footer>
+</ecom-page-layout>

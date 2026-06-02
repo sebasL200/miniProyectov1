@@ -1,0 +1,86 @@
+<div class="p-4">
+    @if (isLoading()) {
+        <div class="flex min-h-80 items-center justify-center">
+            <div class="flex flex-col items-center gap-3 text-sm text-gray-500">
+                <ecom-spinner size="lg" />
+                <p>Cargando detalles de la marca...</p>
+            </div>
+        </div>
+    } @else if (brand(); as brand) {
+        <div class="flex flex-col gap-3">
+            <ecom-form-divider label="Información General" />
+            <div class="flex flex-col gap-1">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <ecom-label label="Nombre">
+                        <ecom-input-text [value]="brand.name" readonly placeholder="Sin nombre" />
+                    </ecom-label>
+                    <ecom-label class="col-span-2" label="Logo">
+                        <div class="flex items-center justify-center">
+                            <ecom-image
+                                size="2xl"
+                                class="border rounded-lg"
+                                [src]="brand.logoUrl"
+                                alt="Logo de la marca"
+                            />
+                        </div>
+                    </ecom-label>
+                </div>
+                <ecom-label label="Descripción">
+                    <ecom-input-textarea
+                        [value]="brand.description"
+                        readonly
+                        resize="none"
+                        placeholder="Sin descripción"
+                    />
+                </ecom-label>
+            </div>
+
+            <ecom-form-divider label="Información técnica" />
+            <div class="flex flex-col gap-1">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <ecom-label label="Título Meta">
+                        <ecom-input-text
+                            [value]="brand.metaTitle"
+                            readonly
+                            placeholder="Sin título meta"
+                        />
+                    </ecom-label>
+                    <ecom-label label="Sitio Web">
+                        <ecom-input-text
+                            [value]="brand.website"
+                            readonly
+                            placeholder="Sin sitio web"
+                        />
+                    </ecom-label>
+                </div>
+                <ecom-label label="Descripción Meta">
+                    <ecom-input-textarea
+                        [value]="brand.metaDescription"
+                        readonly
+                        resize="none"
+                        placeholder="Sin descripción meta"
+                    />
+                </ecom-label>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <ecom-label label="Visibilidad en el Menú">
+                    <p class="mb-2 text-xs text-gray-500">
+                        (Sí/No indica si se mostrará en el menú principal del sitio)
+                    </p>
+                    <ecom-switch [checked]="brand.visibleInMenu" readonly />
+                </ecom-label>
+                <ecom-label label="Estatus">
+                    <p class="mb-2 text-xs text-gray-500">(Activo/Inactivo)</p>
+                    <ecom-switch [checked]="brand.isActive" readonly />
+                </ecom-label>
+            </div>
+        </div>
+    } @else {
+        <div
+            class="flex min-h-80 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 px-6 text-center text-sm text-gray-500"
+        >
+            No se encontró información de la marca.
+        </div>
+    }
+</div>

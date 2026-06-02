@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { ToastConfig } from '@shared/components/ui/toast-container/models/toast-config';
-import { ToastItem } from '@shared/components/ui/toast-container/models/toast-item';
+import { ToastConfig } from '../../components/ui/toast-container/models/toast-config';
+import { ToastItem } from '../../components/ui/toast-container/models/toast-item';
 
 const MAX_VISIBLE_TOASTS = 4;
 

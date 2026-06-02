@@ -12,19 +12,19 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../components/ui/button/button.types';
-import { FormActions } from '@shared/components/form-actions/form-actions';
+import { FormActions } from '../components/form-actions/form-actions';
 
 export class FormActionsOptions {
-  submitLabel: string = 'Guardar';
+  submitLabel = 'Guardar';
   submitButtonVariant: ButtonVariant = 'primary';
   submitButtonSize: ButtonSize = 'sm';
-  clearOnSubmit: boolean = false;
-  canCancel: boolean = true;
-  cancelLabel: string = 'Cancelar';
+  clearOnSubmit = false;
+  canCancel = true;
+  cancelLabel = 'Cancelar';
   cancelButtonVariant: ButtonVariant = 'outline';
   cancelButtonSize: ButtonSize = 'sm';
-  canClear: boolean = false;
-  clearLabel: string = 'Limpiar formulario';
+  canClear = false;
+  clearLabel = 'Limpiar formulario';
   clearButtonVariant: ButtonVariant = 'outline';
   clearButtonSize: ButtonSize = 'sm';
 

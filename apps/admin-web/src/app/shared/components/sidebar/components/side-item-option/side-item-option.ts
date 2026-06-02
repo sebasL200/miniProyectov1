@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { SideItemType } from '../side-item/side-item.types';
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { NavigationEnd, Router } from '@angular/router';
-import { SidebarService } from '@shared/services/sidebar/sidebar-service';
+import { SidebarService } from '../../../../services/sidebar/sidebar-service';
 import { NgClass } from '@angular/common';
 import { filter, map, startWith } from 'rxjs';
 

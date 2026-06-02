@@ -1,6 +1,6 @@
 import { Component, contentChild, input } from '@angular/core';
 import { DataGridColumn } from '../../data-grid.types';
-import { NestedValuePipe } from '@shared/pipes/nested-value/nested-value-pipe';
+import { NestedValuePipe } from '../../../../../pipes/nested-value/nested-value-pipe';
 
 @Component({
   selector: 'td[ecom-data-grid-cell]',

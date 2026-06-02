@@ -1,0 +1,194 @@
+<form
+  [formGroup]="formGroup"
+  class="flex flex-col gap-4"
+  (ngSubmit)="onSubmit()"
+>
+  <ecom-form-divider label="Información General" />
+  <div class="grid grid-cols-1 gap-4">
+    <ecom-label label="Nombre">
+      <ecom-input-text
+        formControlName="name"
+        placeholder="Ej. Laptop Dell Inspiron 15"
+      />
+      <ecom-form-error-message [control]="formGroup.controls.name" />
+    </ecom-label>
+    <ecom-label label="Descripción Corta">
+      <ecom-input-textarea
+        formControlName="shortDescription"
+        resize="none"
+        placeholder="Breve descripción del producto visible en listados y búsquedas"
+      />
+      <ecom-form-error-message
+        [control]="formGroup.controls.shortDescription"
+      />
+    </ecom-label>
+    <ecom-label label="Descripción">
+      <ecom-input-rich-textarea
+        formControlName="description"
+        placeholder="Describe detalladamente el producto: características, materiales, usos recomendados, etc."
+      />
+      <ecom-form-error-message [control]="formGroup.controls.description" />
+    </ecom-label>
+  </div>
+  <div class="flex flex-col gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <ecom-label class="col-span-2 md:col-span-1" label="Categorías">
+        <ecom-input-select
+          multiple
+          [options]="categoriesOptions()"
+          formControlName="categories"
+          (scrollToEnd)="loadMoreCategories()"
+        />
+        <ecom-form-error-message [control]="formGroup.controls.categories" />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Marca">
+        <ecom-input-select
+          [options]="brandsOptions()"
+          formControlName="brandId"
+          (scrollToEnd)="loadMoreBrands()"
+        />
+        <ecom-form-error-message [control]="formGroup.controls.brandId" />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Modelo">
+        <ecom-input-text formControlName="modelYear" placeholder="Ej. 2024" />
+        <ecom-form-error-message [control]="formGroup.controls.modelYear" />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Atributos">
+        <ecom-input-select
+          multiple
+          [options]="attributesOptions()"
+          formControlName="attributes"
+          (scrollToEnd)="loadMoreAttributes()"
+        />
+        <ecom-form-error-message [control]="formGroup.controls.attributes" />
+        @if (attributesRequired().length > 0) {
+        <ecom-label
+          size="sm"
+          class="text-gray-500"
+          label="Atributos incluidos por las categorías seleccionadas"
+        >
+          <div class="flex flex-wrap gap-2">
+            @for (attribute of attributesRequired(); track attribute.id) {
+            <ecom-badge variant="outline">{{ attribute.name }}</ecom-badge>
+            }
+          </div>
+        </ecom-label>
+        }
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Activo/Inactivo">
+        <ecom-switch formControlName="isActive" />
+        <ecom-form-error-message [control]="formGroup.controls.isActive" />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Precio Base">
+        <ecom-input-currency formControlName="basePrice" placeholder="0.00" />
+        <ecom-form-error-message [control]="formGroup.controls.basePrice" />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="SKU base">
+        <ecom-input-text
+          formControlName="sku"
+          placeholder="Ej. DELL-INS15-2024"
+        />
+        <ecom-form-error-message [control]="formGroup.controls.sku" />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Producto destacado">
+        <ecom-switch formControlName="isFeatured" />
+        <ecom-form-error-message [control]="formGroup.controls.isFeatured" />
+      </ecom-label>
+      <ecom-label class="col-span-2 relative" label="Tags">
+        <div class="absolute top-0 right-0 max-w-full">
+          <ecom-tooltip text="Escribe un tag y presiona Enter para agregarlo.">
+            <fa-icon size="xs" [icon]="faInfo" />
+          </ecom-tooltip>
+        </div>
+        <ecom-input-text formControlName="tags" class="hidden" />
+        <ecom-input-text
+          placeholder="Ej. electrónica, laptop, dell"
+          [disabled]="isTagsDisabled()"
+          (keyup)="onTagsKeyUp($event)"
+          (blur)="onTagsBlur($event)"
+        />
+        <ecom-form-error-message
+          [messages]="{ required: 'Debes incluir al menos un tag ' }"
+          [control]="formGroup.controls.tags"
+        />
+        @let tags = formGroup.controls.tags.value; @if (tags && tags.length > 0)
+        {
+        <ecom-label size="sm" class="text-gray-500" label="Tags seleccionados">
+          <div class="flex flex-wrap gap-2">
+            @for (tag of formGroup.controls.tags.value; track $index) {
+            <ecom-badge variant="outline">
+              <button
+                type="button"
+                class="ml-1 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                [disabled]="isTagsDisabled()"
+                (click)="removeTag($index)"
+              >
+                <fa-icon size="xs" [icon]="faX" />
+              </button>
+              {{ tag }}
+            </ecom-badge>
+            }
+          </div>
+        </ecom-label>
+        }
+      </ecom-label>
+    </div>
+    <div class="grid grid-cols-1 xl:grid-cols-2 col-span-2 gap-4">
+      <ecom-label label="Peso">
+        <ecom-input-text formControlName="weight" placeholder="Ej. 1.5 kg" />
+        <ecom-form-error-message
+          [messages]="{ pattern: 'El formato de la medida no es válido' }"
+          [control]="formGroup.controls.weight"
+        />
+      </ecom-label>
+      <div
+        formGroupName="dimensions"
+        class="grid grid-cols-1 md:grid-cols-3 gap-4"
+      >
+        <ecom-label label="Alto">
+          <ecom-input-text formControlName="height" placeholder="Ej. 20 cm" />
+          <ecom-form-error-message
+            [messages]="{ pattern: 'El formato de la medida no es válido' }"
+            [control]="formGroup.controls.dimensions.controls.height"
+          />
+        </ecom-label>
+        <ecom-label label="Ancho">
+          <ecom-input-text formControlName="width" placeholder="Ej. 35 cm" />
+          <ecom-form-error-message
+            [messages]="{ pattern: 'El formato de la medida no es válido' }"
+            [control]="formGroup.controls.dimensions.controls.width"
+          />
+        </ecom-label>
+        <ecom-label label="Largo">
+          <ecom-input-text formControlName="length" placeholder="Ej. 25 cm" />
+          <ecom-form-error-message
+            [messages]="{ pattern: 'El formato de la medida no es válido' }"
+            [control]="formGroup.controls.dimensions.controls.length"
+          />
+        </ecom-label>
+      </div>
+    </div>
+  </div>
+  <ecom-form-divider label="Información Técnica" />
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <ecom-label label="Título Meta">
+      <ecom-input-text
+        formControlName="metaTitle"
+        placeholder="Ej. Laptop Dell Inspiron 15 | Tu Tienda"
+      />
+      <ecom-form-error-message [control]="formGroup.controls.metaTitle" />
+    </ecom-label>
+    <ecom-label label="Descripción Meta">
+      <ecom-input-text
+        formControlName="metaDescription"
+        placeholder="Descripción optimizada para motores de búsqueda (máx. 160 caracteres)"
+      />
+      <ecom-form-error-message [control]="formGroup.controls.metaDescription" />
+    </ecom-label>
+  </div>
+  <ecom-form-actions
+    class="flex items-center justify-end gap-2"
+    [actions]="actions()"
+    [disableSubmit]="!canSubmit()"
+  ></ecom-form-actions>
+</form>

@@ -1,0 +1,11 @@
+import { PRODUCT_ACTIONS_COLUMN, PRODUCT_ACTIVE_COLUMN, PRODUCT_BASE_PRICE_COLUMN, PRODUCT_FEATURED_COLUMN, PRODUCT_MODEL_COLUMN, PRODUCT_NAME_COLUMN } from '../../consts/product-columns.consts';
+import { DataGridColumn } from '../../../../shared/components/ui/data-grid/data-grid.types';
+
+export const BULK_PRODUCT_REGISTRATION_COLUMNS: DataGridColumn[] = [
+    PRODUCT_NAME_COLUMN,
+    PRODUCT_MODEL_COLUMN,
+    PRODUCT_BASE_PRICE_COLUMN,
+    PRODUCT_FEATURED_COLUMN,
+    PRODUCT_ACTIVE_COLUMN,
+    PRODUCT_ACTIONS_COLUMN,
+];

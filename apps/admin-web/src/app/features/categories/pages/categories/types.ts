@@ -1,5 +1,5 @@
-import { ApiResponse, OffsetPaginatedData, OffsetPaginatedResponse } from "@shared/interfaces";
-import { Category } from "@shared/models";
+import { ApiResponse, OffsetPaginatedData, OffsetPaginatedResponse } from '../../../../shared/interfaces/api.interface';
+import { Category } from '../../../../shared/models/category.model';
 
 type CategoryTable = OffsetPaginatedData<'categories', Category>;
 

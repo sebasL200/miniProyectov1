@@ -22,6 +22,9 @@
     "paths": {
       "@shared/*": ["apps/admin-web/src/app/shared/*"],
       "@categories/*": ["apps/admin-web/src/app/features/categories/*"],
+      "@brands/*": ["apps/admin-web/src/app/features/brands/*"],
+      "@products/*": ["apps/admin-web/src/app/features/products/*"],
+      "@attributes/*": ["apps/admin-web/src/app/features/attributes/*"],
       "@environments/environment": ["apps/admin-web/src/environments/environment.ts"],
       "@org/contracts": ["libs/shared/contracts/src/index.ts"],
       "@org/validations": ["libs/shared/validations/src/index.ts"],

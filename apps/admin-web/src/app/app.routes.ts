@@ -13,14 +13,25 @@ export const routes: Routes = [
       },
       {
         path: 'catalogos',
-        loadComponent: () =>
-          import('./features/catalogs/pages/catalogs-page/catalogs-page').then((m) => m.CatalogsPageComponent),
+        loadChildren: () =>
+          import('./features/catalogs/catalogs.routes').then((m) => m.catalogsRoutes),
       },
       {
         path: 'catalogos/categorias',
         loadChildren: () =>
           import('./features/categories/categories.routes').then((m) => m.categoriesRoutes),
       },
+      {
+        path: 'catalogos/marcas',
+        loadChildren: () =>
+          import('./features/brands/brands.routes').then((m) => m.brandRoutes),
+      },
+      {
+        path: 'catalogos/productos',
+        loadChildren: () =>
+          import('./features/products/products.routes').then((m) => m.productRoutes),
+      },
     ],
   },
 ];
+

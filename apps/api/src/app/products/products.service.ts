@@ -33,18 +33,12 @@ import {
   parseProductDimensions,
 } from './validations/products.validation';
 
-function productAttributeSummarySelect() {
-  return {
-    id: true,
-    name: true,
-    slug: true,
-    isRequired: true,
-  };
-}
+// productAttributeSummarySelect frozen – entrega incremental
+// function productAttributeSummarySelect() {
+//   return { id: true, name: true, slug: true, isRequired: true };
+// }
 
 function buildProductInclude() {
-  const attributeSelect = productAttributeSummarySelect();
-
   return {
     brand: {
       select: {
@@ -62,40 +56,13 @@ function buildProductInclude() {
             id: true,
             name: true,
             slug: true,
-            attributes: {
-              where: {
-                attribute: {
-                  deletedAt: null,
-                  isActive: true,
-                },
-              },
-              select: {
-                attribute: {
-                  select: attributeSelect,
-                },
-              },
-            },
+            // attributes include frozen – entrega incremental
           },
         },
       },
     },
-    variants: {
-      where: { deletedAt: null },
-      select: { id: true, sku: true },
-    },
-    attributeLinks: {
-      where: {
-        attribute: {
-          deletedAt: null,
-          isActive: true,
-        },
-      },
-      select: {
-        attribute: {
-          select: attributeSelect,
-        },
-      },
-    },
+    // variants frozen – entrega incremental
+    // attributeLinks frozen – entrega incremental
   } as const;
 }
 
@@ -110,9 +77,7 @@ type ProductWithRelations = ProductRow & {
       id: string;
       name: string;
       slug: string;
-      attributes: Array<{
-        attribute: AttributeSummaryDto;
-      }>;
+      // attributes frozen – entrega incremental
     };
   }>;
   variants: Array<{ id: string; sku: string }>;
@@ -137,8 +102,9 @@ export class ProductsService {
     const dimensionsBase = this.normalizeProductDimensions(
       input.dimensionsBase,
     );
-    const directAttributeIds = this.normalizeAttributeIds(input.attributeIds);
-    await this.ensureActiveAttributesExist(directAttributeIds);
+    // directAttributeIds & ensureActiveAttributesExist frozen – entrega incremental
+    // const directAttributeIds = this.normalizeAttributeIds(input.attributeIds);
+    // await this.ensureActiveAttributesExist(directAttributeIds);
 
     const slug = await this.generateUniqueSlug(input.name);
 
@@ -163,17 +129,7 @@ export class ProductsService {
               data: input.categoriesId.map((categoryId) => ({ categoryId })),
             },
           },
-          ...(directAttributeIds.length > 0
-            ? {
-                attributeLinks: {
-                  createMany: {
-                    data: directAttributeIds.map((attributeId) => ({
-                      attributeId,
-                    })),
-                  },
-                },
-              }
-            : {}),
+          // attributeLinks frozen – entrega incremental
         },
         include: PRODUCT_INCLUDE,
       })) as unknown as ProductWithRelations;
@@ -234,7 +190,7 @@ export class ProductsService {
         totalCount,
         window.pageSize,
       );
-      const products = await this.mapProducts(rows as ProductWithRelations[]);
+      const products = await this.mapProducts(rows as unknown as ProductWithRelations[]);
 
       return {
         products,
@@ -299,7 +255,7 @@ export class ProductsService {
         totalCount,
         window.pageSize,
       );
-      const products = await this.mapProducts(rows as ProductWithRelations[]);
+      const products = await this.mapProducts(rows as unknown as ProductWithRelations[]);
 
       return {
         products,
@@ -344,14 +300,16 @@ export class ProductsService {
     this.validateBackendProduct(merged);
     assertProductReferenceIds(merged);
 
-    const directAttributeIds = this.normalizeAttributeIds(merged.attributeIds);
-    await this.ensureActiveAttributesExist(directAttributeIds);
+    // const directAttributeIds = this.normalizeAttributeIds(merged.attributeIds); // frozen – entrega incremental
+    // await this.ensureActiveAttributesExist(directAttributeIds);                  // frozen
+    const directAttributeIds: string[] = [];
 
-    const nextEffectiveAttributes = await this.buildEffectiveAttributes(
-      merged.categoriesId,
-      directAttributeIds,
-    );
-    await this.ensureVariantsCoverAttributes(id, nextEffectiveAttributes);
+    // ensureVariantsCoverAttributes frozen – entrega incremental
+    // const nextEffectiveAttributes = await this.buildEffectiveAttributes(
+    //   merged.categoriesId,
+    //   directAttributeIds,
+    // );
+    // await this.ensureVariantsCoverAttributes(id, nextEffectiveAttributes);
 
     const data: Record<string, unknown> = {
       brandId: merged.brandId ?? null,
@@ -402,19 +360,19 @@ export class ProductsService {
           }
         }
 
-        if (input.attributeIds !== undefined) {
-          await tx.productAttribute.deleteMany({ where: { productId: id } });
-
-          if (directAttributeIds.length > 0) {
-            await tx.productAttribute.createMany({
-              data: directAttributeIds.map((attributeId) => ({
-                productId: id,
-                attributeId,
-              })),
-              skipDuplicates: true,
-            });
-          }
-        }
+        // productAttribute sync frozen – entrega incremental
+        // if (input.attributeIds !== undefined) {
+        //   await tx.productAttribute.deleteMany({ where: { productId: id } });
+        //   if (directAttributeIds.length > 0) {
+        //     await tx.productAttribute.createMany({
+        //       data: directAttributeIds.map((attributeId) => ({
+        //         productId: id,
+        //         attributeId,
+        //       })),
+        //       skipDuplicates: true,
+        //     });
+        //   }
+        // }
 
         return tx.product.findUniqueOrThrow({
           where: { id },
@@ -514,7 +472,7 @@ export class ProductsService {
         ? [{ name: 'desc' }, { id: 'desc' }]
         : [{ name: 'asc' }, { id: 'asc' }],
       take: pageSize + 1,
-    })) as ProductWithRelations[];
+    })) as unknown as ProductWithRelations[];
 
     const window = this.pagination.cursorWindow(rows, pageSize, isBackward);
     const products = await this.mapProducts(
@@ -574,7 +532,7 @@ export class ProductsService {
         ? [{ name: 'desc' }, { id: 'desc' }]
         : [{ name: 'asc' }, { id: 'asc' }],
       take: pageSize + 1,
-    })) as ProductWithRelations[];
+    })) as unknown as ProductWithRelations[];
 
     const window = this.pagination.cursorWindow(rows, pageSize, isBackward);
     const products = await this.mapProducts(
@@ -677,32 +635,22 @@ export class ProductsService {
   private async mapProducts(
     rows: ProductWithRelations[],
   ): Promise<ProductDto[]> {
-    const globalAttributes = await this.loadGlobalAttributes();
-    return rows.map((row) => this.toProductResponse(row, globalAttributes));
+    // globalAttributes frozen – entrega incremental; return empty attributes
+    return rows.map((row) => this.toProductResponse(row, []));
   }
 
   private async mapProduct(row: ProductWithRelations): Promise<ProductDto> {
-    const globalAttributes = await this.loadGlobalAttributes();
-    return this.toProductResponse(row, globalAttributes);
+    // globalAttributes frozen – entrega incremental; return empty attributes
+    return this.toProductResponse(row, []);
   }
 
   private toProductResponse(
     row: ProductWithRelations,
-    globalAttributes: AttributeSummaryDto[],
+    _globalAttributes: AttributeSummaryDto[],
   ): ProductDto {
-    const directAttributes = this.uniqueAttributes(
-      row.attributeLinks.map((link) => link.attribute),
-    );
-    const inheritedCategoryAttributes = this.uniqueAttributes(
-      row.categories.flatMap((category) =>
-        (category.category.attributes ?? []).map((link) => link.attribute),
-      ),
-    );
-    const attributes = this.uniqueAttributes(
-      globalAttributes,
-      inheritedCategoryAttributes,
-      directAttributes,
-    );
+    // directAttributes & inheritedCategoryAttributes frozen – entrega incremental
+    const directAttributes: AttributeSummaryDto[] = [];
+    const attributes: AttributeSummaryDto[] = [];
 
     return toProductDto(row, {
       directAttributes,
@@ -710,149 +658,34 @@ export class ProductsService {
     });
   }
 
-  private async buildEffectiveAttributes(
-    categoryIds: string[],
-    directAttributeIds: string[],
-  ): Promise<AttributeSummaryDto[]> {
-    const [globalAttributes, categoryAttributes, directAttributes] =
-      await Promise.all([
-        this.loadGlobalAttributes(),
-        this.loadCategoryAttributes(categoryIds),
-        this.loadAttributesByIds(directAttributeIds),
-      ]);
+  // buildEffectiveAttributes frozen – entrega incremental
+  // private async buildEffectiveAttributes(
+  //   categoryIds: string[],
+  //   directAttributeIds: string[],
+  // ): Promise<AttributeSummaryDto[]> { ... }
 
-    return this.uniqueAttributes(
-      globalAttributes,
-      categoryAttributes,
-      directAttributes,
-    );
+  // loadGlobalAttributes frozen – entrega incremental
+  // private async loadGlobalAttributes(): Promise<AttributeSummaryDto[]> { ... }
+
+  // loadCategoryAttributes frozen – entrega incremental
+  // private async loadCategoryAttributes(categoryIds: string[]): Promise<AttributeSummaryDto[]> { ... }
+
+  // loadAttributesByIds frozen – entrega incremental
+  // private async loadAttributesByIds(attributeIds: string[]): Promise<AttributeSummaryDto[]> { ... }
+
+  // ensureActiveAttributesExist frozen – entrega incremental
+  private async ensureActiveAttributesExist(_attributeIds: string[]) {
+    // noop until Attributes module is unfrozen
+    return;
   }
 
-  private async loadGlobalAttributes(): Promise<AttributeSummaryDto[]> {
-    const rows = await this.prisma.attribute.findMany({
-      where: {
-        deletedAt: null,
-        isActive: true,
-        appliesToAll: true,
-      },
-      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
-      select: {
-        ...productAttributeSummarySelect(),
-      },
-    });
-
-    return rows;
-  }
-
-  private async loadCategoryAttributes(
-    categoryIds: string[],
-  ): Promise<AttributeSummaryDto[]> {
-    if (categoryIds.length === 0) {
-      return [];
-    }
-
-    const rows = await this.prisma.attribute.findMany({
-      where: {
-        deletedAt: null,
-        isActive: true,
-        categoryLinks: {
-          some: {
-            categoryId: { in: categoryIds },
-            category: {
-              deletedAt: null,
-            },
-          },
-        },
-      },
-      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
-      select: {
-        ...productAttributeSummarySelect(),
-      },
-    });
-
-    return rows;
-  }
-
-  private async loadAttributesByIds(
-    attributeIds: string[],
-  ): Promise<AttributeSummaryDto[]> {
-    if (attributeIds.length === 0) {
-      return [];
-    }
-
-    const rows = await this.prisma.attribute.findMany({
-      where: {
-        id: { in: attributeIds },
-        deletedAt: null,
-        isActive: true,
-      },
-      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
-      select: {
-        ...productAttributeSummarySelect(),
-      },
-    });
-
-    return rows;
-  }
-
-  private async ensureActiveAttributesExist(attributeIds: string[]) {
-    if (attributeIds.length === 0) {
-      return;
-    }
-
-    const rows = await this.loadAttributesByIds(attributeIds);
-    if (rows.length !== attributeIds.length) {
-      throw new BadRequestException(
-        'validation error: attribute_ids must contain active attribute UUIDs',
-      );
-    }
-  }
-
+  // ensureVariantsCoverAttributes frozen – entrega incremental
   private async ensureVariantsCoverAttributes(
-    productId: string,
-    attributes: AttributeSummaryDto[],
+    _productId: string,
+    _attributes: AttributeSummaryDto[],
   ) {
-    type VariantCoverageRow = {
-      id: string;
-      sku: string;
-      attributeValues: Array<{ attributeId: string }>;
-    };
-
-    const requiredIds = new Set(attributes.map((attribute) => attribute.id));
-    if (requiredIds.size === 0) {
-      return;
-    }
-
-    const rows = (await this.prisma.variant.findMany({
-      where: {
-        productId,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        sku: true,
-        attributeValues: {
-          select: {
-            attributeId: true,
-          },
-        },
-      },
-    })) as VariantCoverageRow[];
-
-    const invalidVariant = rows.find((row: VariantCoverageRow) => {
-      const variantIds = new Set(
-        row.attributeValues.map((item) => item.attributeId),
-      );
-      return [...requiredIds].some(
-        (attributeId) => !variantIds.has(attributeId),
-      );
-    });
-
-    if (invalidVariant) {
-      throw new BadRequestException(
-        `validation error: variant ${invalidVariant.sku} is missing values for the updated product attributes`,
-      );
-    }
+    // noop until Variants module is unfrozen
+    return;
   }
 
   private uniqueAttributes(

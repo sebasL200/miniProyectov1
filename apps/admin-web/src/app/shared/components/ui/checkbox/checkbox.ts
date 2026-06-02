@@ -15,7 +15,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { FormCheckboxControl } from '@angular/forms/signals';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { buildFormValueControlProvider } from '@shared/utils/form-value-control-provider.builder';
+import { buildFormValueControlProvider } from '../../../utils/form-value-control-provider.builder';
 
 import {
   buildCheckboxClasses,

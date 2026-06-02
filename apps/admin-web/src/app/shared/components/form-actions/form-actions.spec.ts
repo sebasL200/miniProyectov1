@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormActionsOptions } from '@shared/interfaces';
+import { FormActionsOptions } from '../../interfaces/form.interface';
 
 import { FormActions } from './form-actions';
 

@@ -1,10 +1,10 @@
-import { Z_INDEX } from "@shared/constants/z-index.const";
+import { Z_INDEX } from '../../../../constants/z-index.const';
 
 export class DialogConfig {
   title?: string;
-  showCloseButton: boolean = true;
-  closeOnEscape: boolean = true;
-  closeOnBackdropClick: boolean = true;
+  showCloseButton = true;
+  closeOnEscape = true;
+  closeOnBackdropClick = true;
   width?: string;
   maxWidth?: string;
   height?: string;

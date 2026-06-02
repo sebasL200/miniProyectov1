@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { CategoriesActionsOptions } from './types';
 import { faEye, faPenNib, faSquarePlus, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@shared/components';
+import { Button } from '../../../../shared/components/ui/button/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({

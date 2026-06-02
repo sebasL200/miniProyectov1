@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { FormCheckboxControl } from '@angular/forms/signals';
-import { buildFormValueControlProvider } from '@shared/utils/form-value-control-provider.builder';
+import { buildFormValueControlProvider } from '../../../utils/form-value-control-provider.builder';
 import {
   buildSwitchInputClasses,
   buildSwitchLabelClasses,

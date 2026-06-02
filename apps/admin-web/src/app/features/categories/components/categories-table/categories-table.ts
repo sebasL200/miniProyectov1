@@ -1,14 +1,17 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { CategoriesTableService } from './categories-table.service';
-import { DataGridColumn } from '@shared/components/ui/data-grid/data-grid.types';
+import { DataGridColumn } from '../../../../shared/components/ui/data-grid/data-grid.types';
 import { CATEGORIES_BASE_COLUMNS } from './consts';
-import { EntityData, PaginationOptions } from '@shared/interfaces';
+import { EntityData } from '../../../../shared/interfaces/entity-record.interface';
+import { PaginationOptions } from '../../../../shared/interfaces/pagination-options.interface';
 import { CategoryRecord } from './types';
-import { DataGrid } from '@shared/components/ui/data-grid/data-grid';
-import { Switch, Card, PaginationFooter } from '@shared/components';
+import { DataGrid } from '../../../../shared/components/ui/data-grid/data-grid';
+import { Switch } from '../../../../shared/components/ui/switch/switch';
+import { Card } from '../../../../shared/components/ui/card/card';
+import { PaginationFooter } from '../../../../shared/components/pagination-footer/pagination-footer';
 import { CategoryTableActions } from '../category-table-actions/category-table-actions';
 import { CategoriesActionsOptions } from '../category-table-actions/types';
-import { CellTemplate } from '@shared/components/ui/data-grid/directives/cell-template';
+import { CellTemplate } from '../../../../shared/components/ui/data-grid/directives/cell-template';
 
 @Component({
     selector: 'ecom-categories-table',

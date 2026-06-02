@@ -8,21 +8,19 @@ import {
     Signal,
     viewChild,
 } from '@angular/core';
-import { ExtractValue, FormActionsOptions, FormComponent, FormEvent } from '@shared/interfaces';
+import { ExtractValue, FormActionsOptions, FormComponent, FormEvent } from '../../../../../shared/interfaces/form.interface';
 import { CategoryFormData, CategoryFormSchema } from './types';
 import { DEFAULT_CATEGORY_FORM_DATA } from './consts';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormDivider } from '@shared/components/ui/form-divider/form-divider';
-import {
-    Label,
-    FormErrorMessage,
-    InputImageUpload,
-    InputImageUploadConfig,
-    InputText,
-    InputTextarea,
-    Switch,
-} from '@shared/components';
-import { FormActions } from '@shared/components/form-actions/form-actions';
+import { FormDivider } from '../../../../../shared/components/ui/form-divider/form-divider';
+import { Label } from '../../../../../shared/components/ui/label/label';
+import { FormErrorMessage } from '../../../../../shared/components/ui/form-error-message/form-error-message';
+import { InputImageUpload } from '../../../../../shared/components/ui/input-image-upload/input-image-upload';
+import { InputImageUploadConfig } from '../../../../../shared/components/ui/input-image-upload/input-image-upload.types';
+import { InputText } from '../../../../../shared/components/ui/input-text/input-text';
+import { InputTextarea } from '../../../../../shared/components/ui/input-textarea/input-textarea';
+import { Switch } from '../../../../../shared/components/ui/switch/switch';
+import { FormActions } from '../../../../../shared/components/form-actions/form-actions';
 import {
     CATEGORY_ALLOWED_IMAGE_TYPES,
     CATEGORY_IMAGE_MAX_DATA_URL_LENGTH,

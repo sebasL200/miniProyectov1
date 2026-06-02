@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Slot } from '@shared/directives/slot/slot';
+import { Slot } from '../../../directives/slot/slot';
 
 import { Image } from './image';
 

@@ -1,5 +1,5 @@
-import { ApiResponse } from "@shared/interfaces";
-import { Category } from "@shared/models";
+import { ApiResponse } from '../../../../shared/interfaces/api.interface';
+import { Category } from '../../../../shared/models/category.model';
 
 export interface ToggleCategoryVisibilityInMenu {
     id: string;

@@ -1,0 +1,16 @@
+<ecom-page-layout>
+    <header ecom-page-header [showBackButton]="true" title="Registro de Marcas en Lote" description="Registra múltiples marcas de una sola vez"></header>
+    <article class="flex items-center justify-end gap-2 mb-2">
+        <ecom-button variant="outline">Cancelar</ecom-button>
+        <ecom-button [disabled]="!hasChanges()" (clicked)="saveChanges()">Guardar</ecom-button>
+    </article>
+    <main class="flex flex-col gap-5">
+        <ecom-card>
+            <ecom-brand-form (submitted)="onSubmit($event)" [actions]="formActions()" />
+            <div slot="footer">
+                <span class="text-sm text-gray-500">Puedes registrar hasta 10 marcas a la vez.</span>
+            </div>
+        </ecom-card>
+        <ecom-brands-table [pagination]="pagination()" [data]="brandDrafts()" [columns]="columns()" />
+    </main>
+</ecom-page-layout>

@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { SideItemType } from '../side-item/side-item.types';
 import { NgClass } from '@angular/common';
-import { SidebarService } from '@shared/services/sidebar/sidebar-service';
+import { SidebarService } from '../../../../services/sidebar/sidebar-service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { SideItemOption } from '../side-item-option/side-item-option';

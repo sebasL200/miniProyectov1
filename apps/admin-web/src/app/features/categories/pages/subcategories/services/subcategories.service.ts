@@ -6,7 +6,7 @@ import {
     SyncCategoryChildrenResponse,
 } from '../types';
 import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
+import { environment } from '../../../../../../environments/environment';
 
 @Injectable()
 export class SubcategoriesService {

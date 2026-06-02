@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { ExtractValue, FormSchema } from '@shared/interfaces';
+import { ExtractValue, FormSchema } from '../../../../../shared/interfaces/form.interface';
 
 export interface CategoryFormSchema extends FormSchema {
     name: FormControl<string>;

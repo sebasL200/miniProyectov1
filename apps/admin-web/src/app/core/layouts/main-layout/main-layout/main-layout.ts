@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Sidebar } from '@shared/components/sidebar/sidebar';
-import { SidebarService } from '@shared/services/sidebar/sidebar-service';
+import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { SidebarService } from '../../../../shared/services/sidebar/sidebar-service';
 import {
   faBagShopping,
   faBasketShopping,
@@ -15,7 +15,7 @@ import {
   faWarehouse,
 } from '@fortawesome/free-solid-svg-icons';
 import { NgClass } from '@angular/common';
-import { Header } from '@shared/components/header/header';
+import { Header } from '../../../../shared/components/header/header';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -71,7 +71,7 @@ export class MainLayout implements OnInit {
       },
       {
         label: 'Catálogos',
-        href: '/catalogs',
+        href: '/catalogos',
         icon: faBookOpen,
       },
       {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
-import { Button } from '@shared/components/ui/button/button';
+import { Button } from '../../../button/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { buildToastClasses, buildToastCloseButtonClasses } from './toast.styles';

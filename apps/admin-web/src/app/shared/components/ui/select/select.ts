@@ -16,7 +16,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { buildFormValueControlProvider } from '@shared/utils/form-value-control-provider.builder';
+import { buildFormValueControlProvider } from '../../../utils/form-value-control-provider.builder';
 import { buildPlaceholderOption } from './select.consts';
 import {
   buildSelectContainerClasses,
@@ -52,7 +52,7 @@ export class Select implements FormValueControl<unknown | null>, ControlValueAcc
   readonly options = input<SelectOption[]>([]);
   readonly placeholder = input('Selecciona una opcion');
   readonly showPlaceholderOption = input(false, { transform: booleanAttribute });
-  readonly invalid = input(false, { alias: 'invalid', transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
   readonly readonly = input(false, { alias: 'readOnly', transform: booleanAttribute });
   readonly size = input<SelectSize>('md');
   readonly searchable = input(false, { transform: booleanAttribute });

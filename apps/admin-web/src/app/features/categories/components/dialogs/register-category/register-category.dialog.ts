@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
-import { IDialogComponent } from '@shared/components/ui/dialog/interfaces/dialog-component.interface';
-import { DialogRef } from '@shared/components/ui/dialog/models/dialog-ref.model';
-import { Category } from '@shared/models';
-import { CategoryForm } from "@categories/components/forms/category-form/category-form";
-import { CategoryFormData } from '@categories/components/forms/category-form/types';
-import { CategoryService } from '@categories/services/category/category.service';
-import { SaveCategoryRequest } from '@categories/services/category/types';
-import { FormActionsOptions, FormEvent } from '@shared/interfaces';
+import { IDialogComponent } from '../../../../../shared/components/ui/dialog/interfaces/dialog-component.interface';
+import { DialogRef } from '../../../../../shared/components/ui/dialog/models/dialog-ref.model';
+import { Category } from '../../../../../shared/models/category.model';
+import { CategoryForm } from '../../forms/category-form/category-form';
+import { CategoryFormData } from '../../forms/category-form/types';
+import { CategoryService } from '../../../services/category/category.service';
+import { SaveCategoryRequest } from '../../../services/category/types';
+import { FormActionsOptions, FormEvent } from '../../../../../shared/interfaces/form.interface';
 
 @Component({
     selector: 'ecom-register-category.dialog',

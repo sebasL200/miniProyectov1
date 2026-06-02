@@ -1,0 +1,10 @@
+<ecom-page-layout>
+    <header ecom-page-header [showBackButton]="true" title="Edita la Marca" description="Edita los detalles de la marca"></header>
+    <main>
+        <ecom-card>
+            @if (brandFormData()) {
+                <ecom-brand-form [initialData]="brandFormData()!" (submitted)="onSaveChanges($event)" />
+            }
+        </ecom-card>
+    </main>
+</ecom-page-layout>

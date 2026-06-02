@@ -1,10 +1,16 @@
 import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
-import { CategoryService } from '@categories/services/category/category.service';
-import { IDialogComponent } from '@shared/components/ui/dialog/interfaces/dialog-component.interface';
-import { DialogRef } from '@shared/components/ui/dialog/models/dialog-ref.model';
-import { Category } from '@shared/models';
-import { ToastService } from '@shared/services/toast/toast.service';
-import { Label, InputText, InputTextarea, PageLayout, Badge, Button, Image } from '@shared/components';
+import { CategoryService } from '../../../services/category/category.service';
+import { IDialogComponent } from '../../../../../shared/components/ui/dialog/interfaces/dialog-component.interface';
+import { DialogRef } from '../../../../../shared/components/ui/dialog/models/dialog-ref.model';
+import { Category } from '../../../../../shared/models/category.model';
+import { ToastService } from '../../../../../shared/services/toast/toast.service';
+import { Label } from '../../../../../shared/components/ui/label/label';
+import { InputText } from '../../../../../shared/components/ui/input-text/input-text';
+import { InputTextarea } from '../../../../../shared/components/ui/input-textarea/input-textarea';
+import { PageLayout } from '../../../../../shared/components/page-layout/page-layout';
+import { Badge } from '../../../../../shared/components/ui/badge/badge';
+import { Button } from '../../../../../shared/components/ui/button/button';
+import { Image } from '../../../../../shared/components/ui/image/image';
 
 @Component({
     selector: 'ecom-category-details.dialog',

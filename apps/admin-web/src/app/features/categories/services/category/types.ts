@@ -1,5 +1,5 @@
-import { ApiResponse, BatchResponse } from "@shared/interfaces";
-import { Category } from "@shared/models";
+import { ApiResponse, BatchResponse } from '../../../../shared/interfaces/api.interface';
+import { Category } from '../../../../shared/models/category.model';
 
 export interface SaveCategoryRequest {
     name: string;

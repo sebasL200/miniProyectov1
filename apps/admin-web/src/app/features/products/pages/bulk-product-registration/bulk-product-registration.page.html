@@ -1,0 +1,27 @@
+<ecom-page-layout>
+    <header ecom-page-header [showBackButton]="true" title="Registro múltiple de productos" description="Agrega productos como borradores y guárdalos en una sola operación"></header>
+    <article class="mb-5">
+        <section class="flex items-center justify-end gap-4">
+            <ecom-button variant="outline" (clicked)="onDiscardChanges()">Cancelar</ecom-button>
+            <ecom-button [disabled]="!canSave()" (clicked)="onSave()">Guardar</ecom-button>
+        </section>
+    </article>
+    <main class="flex flex-col gap-4">
+        <ecom-card>
+            <ecom-product-form
+                [actions]="formActions"
+                [categoriesOptions]="categoriesOptions()"
+                [brandsOptions]="brandsOptions()"
+                [attributesOptions]="attributesOptions()"
+                (submitted)="onSubmit($event)"
+                (canceled)="onCancel($event)"
+            />
+        </ecom-card>
+        <ecom-products-table
+            [data]="productDrafts()"
+            [columns]="columns"
+            [pagination]="pagination"
+            [actionsOptions]="tableActions"
+        />
+    </main>
+</ecom-page-layout>

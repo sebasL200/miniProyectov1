@@ -8,8 +8,8 @@ import { SuccessResponseInterceptor } from './common/interceptors/success-respon
 import { CategoriesModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { ProductsModule } from './products/products.module';
-import { AttributesModule } from './attributes/attributes.module';
-import { VariantsModule } from './variants/variants.module';
+// import { AttributesModule } from './attributes/attributes.module'; // Frozen – entrega incremental
+// import { VariantsModule } from './variants/variants.module'; // Frozen – entrega incremental
 
 @Module({
   imports: [
@@ -17,8 +17,8 @@ import { VariantsModule } from './variants/variants.module';
     CategoriesModule,
     BrandsModule,     
     ProductsModule,
-    AttributesModule,
-    VariantsModule,
+    // AttributesModule, // Frozen – entrega incremental
+    // VariantsModule,  // Frozen – entrega incremental
   ],
   controllers: [AppController],
   providers: [

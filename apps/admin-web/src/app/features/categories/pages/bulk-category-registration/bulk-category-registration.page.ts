@@ -1,19 +1,23 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { PageLayout, PageHeader, Card, Button } from '@shared/components';
-import { CategoryForm } from '@categories/components/forms/category-form/category-form';
-import { CategoriesTable } from '@categories/components/categories-table/categories-table';
-import { createPagination, FormActionsOptions, FormEvent } from '@shared/interfaces';
+import { PageLayout } from '../../../../shared/components/page-layout/page-layout';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { Card } from '../../../../shared/components/ui/card/card';
+import { Button } from '../../../../shared/components/ui/button/button';
+import { CategoryForm } from '../../components/forms/category-form/category-form';
+import { CategoriesTable } from '../../components/categories-table/categories-table';
+import { createPagination } from '../../../../shared/interfaces/pagination-options.interface';
+import { FormActionsOptions, FormEvent } from '../../../../shared/interfaces/form.interface';
 import { CategoryDraft } from './types';
-import { CategoryFormData } from '@categories/components/forms/category-form/types';
-import { toDraftRecord } from '@shared/mappers/entity-record.mapper';
+import { CategoryFormData } from '../../components/forms/category-form/types';
+import { toDraftRecord } from '../../../../shared/mappers/entity-record.mapper';
 import { BULK_CATEGORY_REGISTRATION_COLUMNS } from './consts';
-import { CategoriesActionsOptions } from '@categories/components/category-table-actions/types';
-import { CategoriesTableService } from '@categories/components/categories-table/categories-table.service';
-import { CategoryRecord } from '@categories/components/categories-table/types';
-import { CategoryService } from '@categories/services/category/category.service';
-import { BulkSaveCategoryItem } from '@categories/services/category/types';
-import { ToastService } from '@shared/services/toast/toast.service';
-import { DialogService } from '@shared/services/dialog/dialog.service';
+import { CategoriesActionsOptions } from '../../components/category-table-actions/types';
+import { CategoriesTableService } from '../../components/categories-table/categories-table.service';
+import { CategoryRecord } from '../../components/categories-table/types';
+import { CategoryService } from '../../services/category/category.service';
+import { BulkSaveCategoryItem } from '../../services/category/types';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { DialogService } from '../../../../shared/services/dialog/dialog.service';
 import { Location } from '@angular/common';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PageLayout, PageHeader } from '@shared/components';
+import { PageLayout, PageHeader } from '../../../../shared/components';
 import { CatalogLinkCard } from '../../components/catalog-link-card/catalog-link-card';
 import { CatalogLinkCardType } from '../../components/catalog-link-card/catalog-link-card.types';
 import { faBoxes, faCertificate, faLayerGroup, faListCheck, faTableCellsLarge, faTags } from '@fortawesome/free-solid-svg-icons';

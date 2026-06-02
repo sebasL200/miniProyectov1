@@ -8,8 +8,8 @@ import {
     UpdateCategory,
 } from './types';
 import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
-import { Category } from '@shared/models';
+import { environment } from '../../../../../environments/environment';
+import { Category } from '../../../../shared/models/category.model';
 
 @Injectable({
     providedIn: 'root',

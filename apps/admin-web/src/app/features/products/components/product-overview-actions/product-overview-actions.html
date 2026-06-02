@@ -1,0 +1,15 @@
+<ecom-stat-card [value]="totalCount()" />
+<ecom-dropdown>
+    <ecom-dropdown-trigger>
+        <ecom-button class="flex-row-reverse">
+            <span>Nuevo Registro</span>
+            <fa-icon slot="icon" [icon]="faChevronDown" />
+        </ecom-button>
+    </ecom-dropdown-trigger>
+    <ecom-dropdown-content class="w-48">
+        <ecom-dropdown-group>
+            <ecom-dropdown-item label="Registro único" (click)="onSingleProductCreationRequest()" />
+            <ecom-dropdown-item label="Registro múltiple" (click)="onMultipleProductCreationRequest()" />
+        </ecom-dropdown-group>
+    </ecom-dropdown-content>
+</ecom-dropdown>
