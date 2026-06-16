@@ -1,0 +1,40 @@
+<ecom-card>
+  <ecom-data-grid [data]="rows()" [columns]="columns()" [rowsLimit]="pagination().size">
+    <ng-template ecom-cell-template template="product" let-row let-column="column">
+      <div class="flex min-w-52 items-center gap-3 text-left">
+        <ecom-image
+          class="h-10 w-10 shrink-0 rounded-md object-cover"
+          size="sm"
+          [src]="imageUrl(row)"
+          [alt]="row.product.name"
+        />
+        <div class="min-w-0">
+          <p class="truncate text-sm font-medium text-gray-900">{{ row.product.name }}</p>
+          <p class="truncate text-xs text-gray-500">{{ row.sku }}</p>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template ecom-cell-template template="price" let-row let-column="column">
+      <span>{{ price(row) | currency: 'MXN' : 'es-MX' }}</span>
+    </ng-template>
+    <ng-template ecom-cell-template template="weight" let-row let-column="column">
+      <span>{{ weight(row) }}</span>
+    </ng-template>
+    <ng-template ecom-cell-template template="actions" let-row let-column="column">
+      <ecom-product-variant-table-actions
+        [options]="actionsOptions()"
+        (edit)="onEdit(row)"
+        (view)="onView(row)"
+        (delete)="onDelete(row)"
+      />
+    </ng-template>
+  </ecom-data-grid>
+  @if (pagination().showPagination) {
+    <ecom-pagination-footer
+      class="mt-5"
+      [currentPage]="pagination().page"
+      [pages]="pagination().pages"
+      (pageChange)="onPageChange($event)"
+    />
+  }
+</ecom-card>

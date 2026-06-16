@@ -1,0 +1,22 @@
+<ecom-page-layout [loading]="isLoading()">
+  <header
+    ecom-page-header
+    title="Editar variante de producto"
+    description="Modifica los datos disponibles de la variante"
+  ></header>
+
+  <main>
+    <ecom-card>
+      @if (!isLoading()) {
+        <ecom-product-variant-form
+          [initialData]="initialData()"
+          [productsOptions]="productsOptions()"
+          [attributesOptions]="attributesOptions()"
+          [directAttributes]="directAttributes()"
+          (submitted)="onSubmit($event)"
+          (canceled)="onCanceled($event)"
+        />
+      }
+    </ecom-card>
+  </main>
+</ecom-page-layout>

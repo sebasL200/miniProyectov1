@@ -1,0 +1,33 @@
+@if (options().canEdit) {
+  <ecom-button
+    class="text-gray-700/80"
+    title="Editar"
+    variant="outline"
+    size="icon-sm"
+    (clicked)="onEdit()"
+  >
+    <fa-icon [icon]="faPenNib" />
+  </ecom-button>
+}
+@if (options().canView) {
+  <ecom-button
+    class="text-gray-700/80"
+    title="Detalles"
+    variant="outline"
+    size="icon-sm"
+    (clicked)="onView()"
+  >
+    <fa-icon [icon]="faEye" />
+  </ecom-button>
+}
+@if (options().canDelete) {
+  <ecom-button
+    class="text-gray-700/80"
+    title="Eliminar"
+    variant="outline"
+    size="icon-sm"
+    (clicked)="onDelete()"
+  >
+    <fa-icon [icon]="faTrashCan" />
+  </ecom-button>
+}

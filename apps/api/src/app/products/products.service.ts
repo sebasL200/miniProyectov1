@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 import { PaginationService } from '../common/pagination/pagination.service';
 import {
   CreateBatchProductDto,
@@ -33,10 +34,9 @@ import {
   parseProductDimensions,
 } from './validations/products.validation';
 
-// productAttributeSummarySelect frozen – entrega incremental
-// function productAttributeSummarySelect() {
-//   return { id: true, name: true, slug: true, isRequired: true };
-// }
+function productAttributeSummarySelect() {
+  return { id: true, name: true, slug: true, isRequired: true };
+}
 
 function buildProductInclude() {
   return {
@@ -56,13 +56,43 @@ function buildProductInclude() {
             id: true,
             name: true,
             slug: true,
-            // attributes include frozen – entrega incremental
+            attributes: {
+              where: {
+                attribute: {
+                  deletedAt: null,
+                  isActive: true,
+                },
+              },
+              select: {
+                attribute: {
+                  select: productAttributeSummarySelect(),
+                },
+              },
+            },
           },
         },
       },
     },
-    // variants frozen – entrega incremental
-    // attributeLinks frozen – entrega incremental
+    variants: {
+      where: { deletedAt: null },
+      select: {
+        id: true,
+        sku: true,
+      },
+    },
+    attributeLinks: {
+      where: {
+        attribute: {
+          deletedAt: null,
+          isActive: true,
+        },
+      },
+      select: {
+        attribute: {
+          select: productAttributeSummarySelect(),
+        },
+      },
+    },
   } as const;
 }
 
@@ -77,7 +107,9 @@ type ProductWithRelations = ProductRow & {
       id: string;
       name: string;
       slug: string;
-      // attributes frozen – entrega incremental
+      attributes: Array<{
+        attribute: AttributeSummaryDto;
+      }>;
     };
   }>;
   variants: Array<{ id: string; sku: string }>;
@@ -102,9 +134,8 @@ export class ProductsService {
     const dimensionsBase = this.normalizeProductDimensions(
       input.dimensionsBase,
     );
-    // directAttributeIds & ensureActiveAttributesExist frozen – entrega incremental
-    // const directAttributeIds = this.normalizeAttributeIds(input.attributeIds);
-    // await this.ensureActiveAttributesExist(directAttributeIds);
+    const directAttributeIds = this.normalizeAttributeIds(input.attributeIds);
+    await this.ensureActiveAttributesExist(directAttributeIds);
 
     const slug = await this.generateUniqueSlug(input.name);
 
@@ -121,7 +152,7 @@ export class ProductsService {
           basePrice: input.basePrice,
           skuBase: input.modelYear,
           isFeatured: input.isFeatured,
-          dimensionsWeight: dimensionsBase as any,
+          dimensionsWeight: dimensionsBase as Prisma.InputJsonValue,
           metaTitle: input.name.trim(),
           metaDescription: input.descriptionShort ?? null,
           categories: {
@@ -129,7 +160,17 @@ export class ProductsService {
               data: input.categoriesId.map((categoryId) => ({ categoryId })),
             },
           },
-          // attributeLinks frozen – entrega incremental
+          ...(directAttributeIds.length > 0
+            ? {
+                attributeLinks: {
+                  createMany: {
+                    data: directAttributeIds.map((attributeId) => ({
+                      attributeId,
+                    })),
+                  },
+                },
+              }
+            : {}),
         },
         include: PRODUCT_INCLUDE,
       })) as unknown as ProductWithRelations;
@@ -300,16 +341,14 @@ export class ProductsService {
     this.validateBackendProduct(merged);
     assertProductReferenceIds(merged);
 
-    // const directAttributeIds = this.normalizeAttributeIds(merged.attributeIds); // frozen – entrega incremental
-    // await this.ensureActiveAttributesExist(directAttributeIds);                  // frozen
-    const directAttributeIds: string[] = [];
+    const directAttributeIds = this.normalizeAttributeIds(merged.attributeIds);
+    await this.ensureActiveAttributesExist(directAttributeIds);
 
-    // ensureVariantsCoverAttributes frozen – entrega incremental
-    // const nextEffectiveAttributes = await this.buildEffectiveAttributes(
-    //   merged.categoriesId,
-    //   directAttributeIds,
-    // );
-    // await this.ensureVariantsCoverAttributes(id, nextEffectiveAttributes);
+    const nextEffectiveAttributes = await this.buildEffectiveAttributes(
+      merged.categoriesId,
+      directAttributeIds,
+    );
+    await this.ensureVariantsCoverAttributes(id, nextEffectiveAttributes);
 
     const data: Record<string, unknown> = {
       brandId: merged.brandId ?? null,
@@ -331,7 +370,7 @@ export class ProductsService {
     }
 
     try {
-      const row = (await this.prisma.$transaction(async (tx: any) => {
+      const row = (await this.prisma.$transaction(async (tx) => {
         await tx.product.update({
           where: { id },
           data,
@@ -360,19 +399,18 @@ export class ProductsService {
           }
         }
 
-        // productAttribute sync frozen – entrega incremental
-        // if (input.attributeIds !== undefined) {
-        //   await tx.productAttribute.deleteMany({ where: { productId: id } });
-        //   if (directAttributeIds.length > 0) {
-        //     await tx.productAttribute.createMany({
-        //       data: directAttributeIds.map((attributeId) => ({
-        //         productId: id,
-        //         attributeId,
-        //       })),
-        //       skipDuplicates: true,
-        //     });
-        //   }
-        // }
+        if (input.attributeIds !== undefined) {
+          await tx.productAttribute.deleteMany({ where: { productId: id } });
+          if (directAttributeIds.length > 0) {
+            await tx.productAttribute.createMany({
+              data: directAttributeIds.map((attributeId: string) => ({
+                productId: id,
+                attributeId,
+              })),
+              skipDuplicates: true,
+            });
+          }
+        }
 
         return tx.product.findUniqueOrThrow({
           where: { id },
@@ -430,13 +468,11 @@ export class ProductsService {
           {
             ...current,
             ...row,
-            categories: [],
+            categories: current.categories,
             variants: [],
           },
           {
-            categories: [],
-            variants: [],
-            directAttributes: [],
+            directAttributes: current.attributeLinks.map((link) => link.attribute),
             attributes: [],
           },
         ),
@@ -635,22 +671,30 @@ export class ProductsService {
   private async mapProducts(
     rows: ProductWithRelations[],
   ): Promise<ProductDto[]> {
-    // globalAttributes frozen – entrega incremental; return empty attributes
-    return rows.map((row) => this.toProductResponse(row, []));
+    const globalAttributes = await this.loadGlobalAttributes();
+    return rows.map((row) => this.toProductResponse(row, globalAttributes));
   }
 
   private async mapProduct(row: ProductWithRelations): Promise<ProductDto> {
-    // globalAttributes frozen – entrega incremental; return empty attributes
-    return this.toProductResponse(row, []);
+    const globalAttributes = await this.loadGlobalAttributes();
+    return this.toProductResponse(row, globalAttributes);
   }
 
   private toProductResponse(
     row: ProductWithRelations,
-    _globalAttributes: AttributeSummaryDto[],
+    globalAttributes: AttributeSummaryDto[],
   ): ProductDto {
-    // directAttributes & inheritedCategoryAttributes frozen – entrega incremental
-    const directAttributes: AttributeSummaryDto[] = [];
-    const attributes: AttributeSummaryDto[] = [];
+    const inheritedCategoryAttributes = row.categories.flatMap((cat) =>
+      (cat.category.attributes ?? []).map((link) => link.attribute),
+    );
+    const directAttributes = row.attributeLinks.map(
+      (link) => link.attribute,
+    );
+    const attributes = this.uniqueAttributes(
+      globalAttributes,
+      inheritedCategoryAttributes,
+      directAttributes,
+    );
 
     return toProductDto(row, {
       directAttributes,
@@ -658,34 +702,111 @@ export class ProductsService {
     });
   }
 
-  // buildEffectiveAttributes frozen – entrega incremental
-  // private async buildEffectiveAttributes(
-  //   categoryIds: string[],
-  //   directAttributeIds: string[],
-  // ): Promise<AttributeSummaryDto[]> { ... }
-
-  // loadGlobalAttributes frozen – entrega incremental
-  // private async loadGlobalAttributes(): Promise<AttributeSummaryDto[]> { ... }
-
-  // loadCategoryAttributes frozen – entrega incremental
-  // private async loadCategoryAttributes(categoryIds: string[]): Promise<AttributeSummaryDto[]> { ... }
-
-  // loadAttributesByIds frozen – entrega incremental
-  // private async loadAttributesByIds(attributeIds: string[]): Promise<AttributeSummaryDto[]> { ... }
-
-  // ensureActiveAttributesExist frozen – entrega incremental
-  private async ensureActiveAttributesExist(_attributeIds: string[]) {
-    // noop until Attributes module is unfrozen
-    return;
+  private async buildEffectiveAttributes(
+    categoryIds: string[],
+    directAttributeIds: string[],
+  ): Promise<AttributeSummaryDto[]> {
+    const globalAttributes = await this.loadGlobalAttributes();
+    const categoryAttributes = await this.loadCategoryAttributes(categoryIds);
+    const directAttributes = await this.loadAttributesByIds(directAttributeIds);
+    return this.uniqueAttributes(globalAttributes, categoryAttributes, directAttributes);
   }
 
-  // ensureVariantsCoverAttributes frozen – entrega incremental
+  private async loadGlobalAttributes(): Promise<AttributeSummaryDto[]> {
+    const rows = await this.prisma.attribute.findMany({
+      where: {
+        deletedAt: null,
+        isActive: true,
+        appliesToAll: true,
+      },
+      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
+      select: productAttributeSummarySelect(),
+    });
+    return rows;
+  }
+
+  private async loadCategoryAttributes(
+    categoryIds: string[],
+  ): Promise<AttributeSummaryDto[]> {
+    if (categoryIds.length === 0) {
+      return [];
+    }
+    const rows = await this.prisma.categoryAttribute.findMany({
+      where: {
+        categoryId: { in: categoryIds },
+        attribute: { deletedAt: null, isActive: true },
+      },
+      select: {
+        attribute: {
+          select: productAttributeSummarySelect(),
+        },
+      },
+    });
+    return rows.map((row) => row.attribute);
+  }
+
+  private async loadAttributesByIds(
+    attributeIds: string[],
+  ): Promise<AttributeSummaryDto[]> {
+    if (attributeIds.length === 0) {
+      return [];
+    }
+    const rows = await this.prisma.attribute.findMany({
+      where: {
+        id: { in: attributeIds },
+        deletedAt: null,
+        isActive: true,
+      },
+      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }, { id: 'asc' }],
+      select: productAttributeSummarySelect(),
+    });
+    return rows;
+  }
+
+  private async ensureActiveAttributesExist(attributeIds: string[]) {
+    if (attributeIds.length === 0) {
+      return;
+    }
+    const rows = await this.loadAttributesByIds(attributeIds);
+    if (rows.length !== attributeIds.length) {
+      throw new BadRequestException(
+        'validation error: attribute_ids must contain active attribute UUIDs',
+      );
+    }
+  }
+
   private async ensureVariantsCoverAttributes(
-    _productId: string,
-    _attributes: AttributeSummaryDto[],
+    productId: string,
+    effectiveAttributes: AttributeSummaryDto[],
   ) {
-    // noop until Variants module is unfrozen
-    return;
+    if (effectiveAttributes.length === 0) {
+      return;
+    }
+    const variants = await this.prisma.variant.findMany({
+      where: { productId, deletedAt: null },
+      select: {
+        id: true,
+        attributeValues: {
+          select: { attributeId: true },
+        },
+      },
+    });
+
+    const requiredAttributeIds = effectiveAttributes
+      .filter((attr) => attr.isRequired)
+      .map((attr) => attr.id);
+
+    for (const variant of variants) {
+      const variantAttrIds = new Set(
+        variant.attributeValues.map((val) => val.attributeId),
+      );
+      const missing = requiredAttributeIds.filter((id) => !variantAttrIds.has(id));
+      if (missing.length > 0) {
+        console.warn(
+          `Advisory: Variant ${variant.id} of Product ${productId} is missing required attributes: ${missing.join(', ')}`,
+        );
+      }
+    }
   }
 
   private uniqueAttributes(

@@ -1,0 +1,142 @@
+<ecom-page-layout class="flex flex-col justify-between" [loading]="isLoading()">
+  @if (!isLoading() && variant(); as variant) {
+    <main class="flex flex-col gap-4 overflow-y-auto">
+      <section class="flex flex-wrap items-center gap-3">
+        <ecom-badge size="xl">{{ activeLabel() }}</ecom-badge>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <ecom-form-divider label="Información general" />
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <ecom-label label="Producto">
+            <ecom-input-text [value]="variant.product.name" [readonly]="true" />
+          </ecom-label>
+          <ecom-label label="SKU">
+            <ecom-input-text [value]="variant.sku" [readonly]="true" />
+          </ecom-label>
+          <ecom-label label="Precio">
+            <ecom-input-text [value]="priceLabel()" [readonly]="true" />
+          </ecom-label>
+          <ecom-label label="Stock">
+            <ecom-input-text
+              [value]="variant.stockQuantity.toString()"
+              [readonly]="true"
+            />
+          </ecom-label>
+          <ecom-label label="Stock mínimo">
+            <ecom-input-text
+              [value]="variant.minimumStock.toString()"
+              [readonly]="true"
+            />
+          </ecom-label>
+          <ecom-label label="Código de barras">
+            <ecom-input-text
+              [value]="variant.barcodeGtin ?? ''"
+              [readonly]="true"
+              placeholder="Sin código de barras"
+            />
+          </ecom-label>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <ecom-form-divider label="Descripción" />
+        <ecom-html-viewer
+          [value]="variant.descriptionHtml ?? ''"
+          placeholder="Sin descripción"
+        />
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <ecom-form-divider label="Dimensiones" />
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <ecom-label label="Peso">
+            <ecom-input-text
+              [value]="variant.dimensions.weight ?? ''"
+              [readonly]="true"
+              placeholder="Sin peso"
+            />
+          </ecom-label>
+          <ecom-label label="Alto">
+            <ecom-input-text
+              [value]="variant.dimensions.height ?? ''"
+              [readonly]="true"
+              placeholder="Sin alto"
+            />
+          </ecom-label>
+          <ecom-label label="Ancho">
+            <ecom-input-text
+              [value]="variant.dimensions.width ?? ''"
+              [readonly]="true"
+              placeholder="Sin ancho"
+            />
+          </ecom-label>
+          <ecom-label label="Largo">
+            <ecom-input-text
+              [value]="variant.dimensions.length ?? ''"
+              [readonly]="true"
+              placeholder="Sin largo"
+            />
+          </ecom-label>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <ecom-form-divider label="Atributos" />
+        <ecom-label label="Valores">
+          <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+            @for (item of variant.attributeValues; track item.attribute.id) {
+              <div class="rounded border border-gray-200 p-3">
+                <p class="text-sm font-medium text-gray-900">
+                  {{ item.attribute.name }}
+                </p>
+                <p class="text-sm text-gray-600">{{ item.value }}</p>
+              </div>
+            } @empty {
+              <span class="text-sm text-gray-500">Sin valores de atributos</span>
+            }
+          </div>
+        </ecom-label>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <ecom-label label="Atributos efectivos">
+            <div class="flex flex-wrap items-center gap-2">
+              @for (attribute of variant.attributes; track attribute.id) {
+                <ecom-badge>{{ attribute.name }}</ecom-badge>
+              } @empty {
+                <span class="text-sm text-gray-500">Sin atributos</span>
+              }
+            </div>
+          </ecom-label>
+          <ecom-label label="Atributos directos">
+            <div class="flex flex-wrap items-center gap-2">
+              @for (attribute of variant.directAttributes; track attribute.id) {
+                <ecom-badge variant="secondary">{{ attribute.name }}</ecom-badge>
+              } @empty {
+                <span class="text-sm text-gray-500">Sin atributos directos</span>
+              }
+            </div>
+          </ecom-label>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <ecom-form-divider label="Imágenes" />
+        <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+          @for (imageUrl of variant.imageUrls; track $index) {
+            <img
+              class="aspect-square w-full rounded-sm border border-border bg-muted object-cover"
+              [src]="imageUrl"
+              alt="Imagen de variante"
+            />
+          } @empty {
+            <span class="text-sm text-gray-500 md:col-span-4">Sin imágenes</span>
+          }
+        </div>
+      </section>
+    </main>
+  }
+
+  <footer class="flex items-center justify-end pt-4">
+    <ecom-button variant="outline" (click)="closeDialog()">Cerrar</ecom-button>
+  </footer>
+</ecom-page-layout>

@@ -1,0 +1,19 @@
+<ecom-page-layout [loading]="isLoadingComposite()">
+  <header
+    ecom-page-header
+    title="Variantes de productos"
+    description="Administra las variantes vinculadas a tus productos"
+  ></header>
+  <article class="mb-5">
+    <ecom-product-variant-overview-actions
+      [totalCount]="totalVariants()"
+      (creationRequest)="onProductVariantCreationRequest()"
+    />
+  </article>
+  <main>
+    <ecom-product-variants-table
+      [data]="rows()"
+      [pagination]="pagination()"
+    />
+  </main>
+</ecom-page-layout>

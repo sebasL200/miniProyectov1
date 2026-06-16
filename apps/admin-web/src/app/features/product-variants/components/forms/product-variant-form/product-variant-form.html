@@ -1,0 +1,177 @@
+<form class="space-y-6" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="space-y-6">
+    <ecom-form-divider label="Información general" />
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <ecom-label label="Producto">
+        <ecom-input-select
+          [options]="productsOptions()"
+          formControlName="product"
+          searchable
+          (search)="searchProducts($event)"
+          (scrollToEnd)="loadMoreProducts()"
+        />
+        <ecom-form-error-message
+          [control]="formGroup.controls.product"
+          [messages]="{
+            required: 'El producto es obligatorio.'
+          }"
+        />
+      </ecom-label>
+      <ecom-label label="Nombre">
+        <ecom-input-text
+          placeholder="Ingrese el nombre"
+          formControlName="name"
+        />
+        <ecom-form-error-message
+          [control]="formGroup.controls.name"
+          [messages]="{
+            required: 'El nombre es obligatorio.'
+          }"
+        />
+      </ecom-label>
+      <ecom-label label="SKU">
+        <ecom-input-text placeholder="Ingrese el SKU" formControlName="sku" />
+        <ecom-form-error-message
+          [control]="formGroup.controls.sku"
+          [messages]="{
+            required: 'El SKU es obligatorio.',
+            pattern: 'El SKU debe tener entre 5 y 32 caracteres y solo puede contener letras, números y guiones.'
+          }"
+        />
+      </ecom-label>
+      <ecom-label label="Atributos">
+        <ecom-input-select
+          multiple
+          [options]="effectiveAttributeOptions()"
+          formControlName="attributes"
+        />
+        <ecom-form-error-message [control]="formGroup.controls.attributes" />
+      </ecom-label>
+      <div class="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <ecom-label label="Precio">
+          <ecom-input-currency formControlName="price" placeholder="0.00" />
+          <ecom-form-error-message
+            [control]="formGroup.controls.price"
+            [messages]="{
+            min: 'El precio no puede ser negativo.'
+          }"
+          />
+        </ecom-label>
+        <ecom-label label="Activo/Inactivo">
+          <ecom-switch formControlName="isActive" />
+          <ecom-form-error-message [control]="formGroup.controls.isActive" />
+        </ecom-label>
+      </div>
+      <ecom-label class="md:col-span-2" label="Descripción">
+        <ecom-input-rich-textarea
+          placeholder="Ingrese la descripción"
+          formControlName="description"
+        />
+        <ecom-form-error-message
+          [control]="formGroup.controls.description"
+          [messages]="{
+            required: 'La descripción es obligatoria.',
+            maxlength: 'La descripción debe tener máximo 2000 caracteres.'
+          }"
+        />
+      </ecom-label>
+      <ecom-label class="md:col-span-2" label="Imágenes">
+        <ecom-input-image-upload
+          formControlName="images"
+          accept="image/png,image/jpeg,image/svg+xml"
+          [config]="imageUploadConfig"
+        />
+        <ecom-form-error-message
+          [control]="formGroup.controls.images"
+          [messages]="{
+            required: 'Agrega al menos una imagen.',
+            maxlength: 'Una o más imágenes exceden el tamaño permitido.'
+          }"
+        />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Stock mínimo">
+        <ecom-input-text
+          type="number"
+          placeholder="0"
+          formControlName="minimumStock"
+        />
+        <ecom-form-error-message
+          [control]="formGroup.controls.minimumStock"
+          [messages]="{
+            required: 'El stock mínimo es obligatorio.',
+            nonNegativeInteger: 'El stock mínimo debe ser un entero mayor o igual a 0.'
+          }"
+        />
+      </ecom-label>
+      <ecom-label class="col-span-2 md:col-span-1" label="Código de barras">
+        <ecom-input-text
+          placeholder="Ingrese el código de barras"
+          formControlName="barcode"
+        />
+        <ecom-form-error-message
+          [control]="formGroup.controls.barcode"
+          [messages]="{
+            barcodeGtinDigits: 'El código de barras solo puede contener dígitos.',
+            barcodeGtinLength: 'El código de barras debe tener 8, 12, 13 o 14 dígitos.',
+            barcodeGtinCheckDigit: 'El dígito verificador del código de barras no es válido.'
+          }"
+        />
+      </ecom-label>
+      <div
+        formGroupName="dimensions"
+        class="col-span-2 grid grid-cols-2 gap-4 md:col-span-1"
+      >
+        <ecom-label label="Peso">
+          <ecom-input-text formControlName="weight" placeholder="Ej. 1.5 kg" />
+          <ecom-form-error-message
+            [messages]="{
+            required: 'El peso es obligatorio.',
+            pattern: 'El formato de la medida no es válido'
+          }"
+            [control]="formGroup.controls.dimensions.controls.weight"
+          />
+        </ecom-label>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <ecom-label label="Alto">
+            <ecom-input-text formControlName="height" placeholder="Ej. 20 cm" />
+            <ecom-form-error-message
+              [messages]="{ pattern: 'El formato de la medida no es válido' }"
+              [control]="formGroup.controls.dimensions.controls.height"
+            />
+          </ecom-label>
+          <ecom-label label="Ancho">
+            <ecom-input-text formControlName="width" placeholder="Ej. 35 cm" />
+            <ecom-form-error-message
+              [messages]="{ pattern: 'El formato de la medida no es válido' }"
+              [control]="formGroup.controls.dimensions.controls.width"
+            />
+          </ecom-label>
+          <ecom-label label="Largo">
+            <ecom-input-text formControlName="length" placeholder="Ej. 25 cm" />
+            <ecom-form-error-message
+              [messages]="{ pattern: 'El formato de la medida no es válido' }"
+              [control]="formGroup.controls.dimensions.controls.length"
+            />
+          </ecom-label>
+        </div>
+      </div>
+    </div>
+    <ecom-product-variant-attributes-table
+      formControlName="attributeValues"
+      [attributes]="selectedAttributes()"
+      [directAttributes]="directAttributes()"
+    />
+    <ecom-form-error-message
+      [control]="formGroup.controls.attributeValues"
+      [messages]="{
+        effectiveAttributeValues: 'Captura un valor para todos los atributos del producto.'
+      }"
+    />
+
+    <ecom-form-actions
+      class="flex items-center justify-end gap-2"
+      [actions]="actions()"
+      [disableSubmit]="!canSubmit()"
+    />
+  </div>
+</form>

@@ -1,0 +1,41 @@
+<div class="overflow-x-auto rounded-md border border-gray-200">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-2 text-left text-sm font-medium text-gray-700">
+          Atributo
+        </th>
+        <th class="p-2 text-left text-sm font-medium text-gray-700">Valor</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 bg-white">
+      @for (row of rows(); track trackRow(row)) {
+        <tr>
+          <td class="p-2">
+            <div class="text-left">
+              <p class="text-sm font-medium text-gray-900">
+                {{ row.attribute.name }}
+              </p>
+              <p class="text-xs text-gray-500">{{ row.attribute.slug }}</p>
+            </div>
+          </td>
+          <td class="p-2">
+            <ecom-input-text
+              [value]="row.value"
+              placeholder="Valor del atributo"
+              [disabled]="isDisabled()"
+              (valueChange)="onValueChange(row, $event)"
+              (blur)="onBlur()"
+            />
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td class="p-3 text-center text-sm text-gray-500" colspan="2">
+            Sin registros
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

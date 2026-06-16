@@ -1,12 +1,9 @@
-/**
- * Stub AttributesQueryService – Attributes feature frozen for incremental delivery.
- * All methods return NEVER-resolving observables so they don't accidentally trigger HTTP calls.
- * Replace with the real implementation when AttributesModule is unfrozen.
- */
-
-import { Injectable } from '@angular/core';
-import { NEVER, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 import { SearchParams } from '../../../../shared/interfaces';
+import { cleanParams } from '../../../../shared/utils/params.utils';
 import { AttributesResponse } from './types';
 
 export interface AttributeQueryFilters {
@@ -18,21 +15,34 @@ export interface AttributeQueryFilters {
 
 @Injectable({ providedIn: 'root' })
 export class AttributesQueryService {
-   
+  private readonly http: HttpClient = inject(HttpClient);
+
   getAttributes(
-    _params: SearchParams,
-    _filters?: AttributeQueryFilters,
+    params: SearchParams,
+    filters?: AttributeQueryFilters,
   ): Observable<AttributesResponse> {
-    // frozen – entrega incremental
-    return NEVER as unknown as Observable<AttributesResponse>;
+    return this.http.get<AttributesResponse>(
+      `${environment.apiUrl}/attributes`,
+      {
+        params: cleanParams({ ...params, ...filters }),
+      },
+    );
   }
 
-   
   getAttributesCursorByCategoryIds(
-    _categoryIds: string[],
-    _params: SearchParams,
+    categoryIds: string[],
+    params: SearchParams,
   ): Observable<AttributesResponse> {
-    // frozen – entrega incremental
-    return NEVER as unknown as Observable<AttributesResponse>;
+    return this.http.get<AttributesResponse>(
+      `${environment.apiUrl}/attributes`,
+      {
+        params: cleanParams({
+          ...params,
+          categoryIds: categoryIds.join(','),
+          or: 'appliesToAll,categoryIds',
+          appliesToAll: true,
+        }),
+      },
+    );
   }
 }

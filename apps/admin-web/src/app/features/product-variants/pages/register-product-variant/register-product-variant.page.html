@@ -1,0 +1,19 @@
+<ecom-page-layout>
+  <header
+    ecom-page-header
+    title="Nueva variante de producto"
+    description="Registra una variante vinculada a un producto del catálogo"
+  ></header>
+
+  <main>
+    <ecom-card>
+      <ecom-product-variant-form
+        [productsOptions]="productsOptions()"
+        [attributesOptions]="attributesOptions()"
+        [directAttributes]="directAttributes()"
+        (submitted)="onSubmit($event)"
+        (canceled)="onCanceled($event)"
+      />
+    </ecom-card>
+  </main>
+</ecom-page-layout>
